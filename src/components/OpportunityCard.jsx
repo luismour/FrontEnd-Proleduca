@@ -6,6 +6,7 @@ export default function OpportunityCard({
   logoUrl,
   institution,
   course,
+  turno,
   location,
   originalPrice,
   discountedPrice,
@@ -15,8 +16,6 @@ export default function OpportunityCard({
   description,
   status
 }) {
-  const [line1, line2] = location.split('\n');
-
   return (
     <Link to={`/bolsa/${id}`} className="block">
       <div className="relative bg-white border border-gray-200 rounded-xl p-4 w-full shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between min-h-[300px]">
@@ -27,7 +26,7 @@ export default function OpportunityCard({
 
         <button
           onClick={(e) => {
-            e.preventDefault(); 
+            e.preventDefault();
             onToggleFavorite();
           }}
           className="absolute top-3 right-3 text-yellow-400 text-3x1 focus:outline-none"
@@ -49,12 +48,12 @@ export default function OpportunityCard({
           {course}
         </p>
 
-        {/* Rodapé com localização e preços */}
+        {/* Rodapé com turno, localização e preços */}
         <div className="flex justify-between items-end mt-auto">
-          {/* Localização (esquerda) */}
+          {/* Turno e Localização (esquerda) */}
           <div className="text-sm text-black">
-            <p>{line1}</p>
-            <p>{line2}</p>
+            <p>{turno}</p>
+            <p>{location}</p>
           </div>
 
           {/* Preços */}

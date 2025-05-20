@@ -16,7 +16,7 @@ export default function Login() {
 
   const { setUserLoggedIn } = useOutletContext();
 
-  const useMock = true;
+  const useMock = false; // Agora o login real será usado
 
   const handleLogin = async (values, { setSubmitting }) => {
     try {
@@ -46,11 +46,14 @@ export default function Login() {
         } else {
           setMessage("E-mail ou senha inválidos.");
         }
-
       } else {
-        const response = await axios.post("/api/login", values);
-        if (response.status === 200) {
-          localStorage.setItem("user", JSON.stringify(response.data.cliente));
+        const response = await axios.post("http://localhost:8080/edupass/login", values);
+
+        if (response.status === 200 && response.data && response.data.status !== false) {
+          const { token, cliente} = response.data;
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(cliente));
+          
           setMessage("Login realizado com sucesso!");
           setUserLoggedIn(true);
           navigate("/");
@@ -59,7 +62,7 @@ export default function Login() {
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao conectar com o servidor:", error);
       setMessage("Erro ao conectar com o servidor.");
     } finally {
       setSubmitting(false);

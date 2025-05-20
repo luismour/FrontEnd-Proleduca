@@ -23,18 +23,27 @@ export default function FiltroCursos({ onBuscar }) {
       bolsa,
       modalidade,
     };
-    onBuscar(filtros); // Passa os filtros para o componente pai
+    onBuscar(filtros);
   };
+
+  const handleTabChange = (newTab) => {
+    setTab(newTab);
+    setCurso('');
+    setInstituicao('');
+    setCidade(newTab === 'Escolas' ? '' : 'Recife, PE');
+  };
+
+  const isEscola = tab === 'Escolas';
 
   return (
     <section className="w-full min-h-screen bg-blue-600 flex items-center justify-center">
       <div className="w-full max-w-5xl bg-white rounded-lg shadow-lg p-6 pt-0">
         {/* Tabs */}
-        <div className="flex ">
+        <div className="flex">
           {tabs.map((item) => (
             <button
               key={item}
-              onClick={() => setTab(item)}
+              onClick={() => handleTabChange(item)}
               className={`flex-3 py-4 font-semibold ${tab === item ? 'bg-white' : 'bg-yellow-400'} ${
                 tab === item ? ' border border-white' : ''
               } transition-colors`}
@@ -47,39 +56,74 @@ export default function FiltroCursos({ onBuscar }) {
         {/* Formulário */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6 ">
           <div>
-            <label className="text-sm font-semibold">Qual curso você quer estudar?</label>
+            <label className="text-sm font-semibold">
+              {isEscola ? 'Qual a sua cidade?' : 'Qual curso você quer estudar?'}
+            </label>
             <input
               type="text"
               value={curso}
               onChange={(e) => setCurso(e.target.value)}
-              placeholder="Digite o curso"
+              placeholder={isEscola ? 'Digite sua cidade' : 'Digite o curso'}
               className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
           </div>
 
           <div>
-            <label className="text-sm font-semibold">Qual a instituição?</label>
+            <label className="text-sm font-semibold">
+              {isEscola ? 'Qual o seu bairro?' : 'Qual a instituição?'}
+            </label>
             <input
               type="text"
               value={instituicao}
               onChange={(e) => setInstituicao(e.target.value)}
-              placeholder="Digite a instituição que deseja estudar"
+              placeholder={isEscola ? 'Digite seu bairro' : 'Digite a instituição que deseja estudar'}
               className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
           </div>
 
           <div>
-            <label className="text-sm font-semibold">Em que cidade quer estudar?</label>
+            <label className="text-sm font-semibold">
+              {isEscola ? 'Ano/Série' : 'Em que cidade quer estudar?'}
+            </label>
             <div className="flex">
-              <input
-                type="text"
-                value={cidade}
-                onChange={(e) => setCidade(e.target.value)}
-                className="flex-1 mt-1 p-2  border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              />
+              {isEscola ? (
+                <select
+                  value={cidade}
+                  onChange={(e) => setCidade(e.target.value)}
+                  className="flex-1 mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                >
+                  <option value="">Selecione o ano/série</option>
+                  {/* Educação Infantil */}
+                  <option value="Maternal">Maternal</option>
+                  <option value="Jardim I">Jardim I</option>
+                  <option value="Jardim II">Jardim II</option>
+                  {/* Ensino Fundamental */}
+                  <option value="1º Ano">1º Ano</option>
+                  <option value="2º Ano">2º Ano</option>
+                  <option value="3º Ano">3º Ano</option>
+                  <option value="4º Ano">4º Ano</option>
+                  <option value="5º Ano">5º Ano</option>
+                  <option value="6º Ano">6º Ano</option>
+                  <option value="7º Ano">7º Ano</option>
+                  <option value="8º Ano">8º Ano</option>
+                  <option value="9º Ano">9º Ano</option>
+                  {/* Ensino Médio */}
+                  <option value="1ª Série">1ª Série</option>
+                  <option value="2ª Série">2ª Série</option>
+                  <option value="3ª Série">3ª Série</option>
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  value={cidade}
+                  onChange={(e) => setCidade(e.target.value)}
+                  placeholder="Digite a cidade"
+                  className="flex-1 mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+              )}
               <button
                 onClick={handleBuscar}
-                className=" ml-7 mt-1 bg-yellow-400 text-white font-bold px-4 rounded-md hover:bg-yellow-500 "
+                className="ml-7 mt-1 bg-yellow-400 text-white font-bold px-4 rounded-md hover:bg-yellow-500"
               >
                 Buscar
               </button>

@@ -8,8 +8,7 @@ import About from "../components/About";
 function HomePage() {
   return (
     <>
-      <FiltroCursos />
-      <Steps />
+
       <OpportunitiesList />
       <About />
       <Footer />

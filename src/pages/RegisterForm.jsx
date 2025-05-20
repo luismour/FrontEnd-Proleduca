@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom"; // Importa o hook useNavigate
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
-  const [initialValues, setInitialValues] = useState({
+  const [submitted, setSubmitted] = useState(false);
+  const navigate = useNavigate();
+
+  const initialValues = {
     name: "",
     email: "",
     confirmationEmail: "",
@@ -14,17 +17,7 @@ export default function RegisterForm() {
     cpf: "",
     dateOfBirth: "",
     phone: "",
-  });
-
-  const [submitted, setSubmitted] = useState(false);
-  const navigate = useNavigate(); 
-
-  useEffect(() => {
-    axios
-      .get("/mockRegister.json")
-      .then((res) => setInitialValues(res.data))
-      .catch((err) => console.error("Erro ao carregar dados mock:", err));
-  }, []);
+  };
 
   const validateCPF = (cpf) => {
     cpf = cpf.replace(/[^\d]+/g, "");
@@ -34,7 +27,6 @@ export default function RegisterForm() {
     let rev = 11 - (sum % 11);
     if (rev === 10 || rev === 11) rev = 0;
     if (rev !== parseInt(cpf.charAt(9))) return false;
-
     sum = 0;
     for (let i = 0; i < 10; i++) sum += parseInt(cpf.charAt(i)) * (11 - i);
     rev = 11 - (sum % 11);
@@ -69,14 +61,27 @@ export default function RegisterForm() {
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
-    console.log("Dados prontos para envio:", values);
-    setSubmitted(true);
-    setSubmitting(false);
+    const payload = {
+      fullName: values.name,
+      email: values.email,
+      password: values.password,
+      cpf: values.cpf,
+      dateOfBirth: values.dateOfBirth,
+      phone: values.phone,
+      status: true
+    };
 
-    
-    setTimeout(() => {
-      navigate("/login"); 
-    }, 2000); 
+    axios
+      .post("http://localhost:8080/customers/create", payload) // 
+      .then(() => {
+        setSubmitted(true);
+        setSubmitting(false);
+        setTimeout(() => navigate("/login"), 2000);
+      })
+      .catch((err) => {
+        console.error("Erro ao cadastrar:", err);
+        setSubmitting(false);
+      });
   };
 
   return (
@@ -101,7 +106,6 @@ export default function RegisterForm() {
             </div>
           ) : (
             <Formik
-              enableReinitialize
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
