@@ -1,29 +1,40 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+// src/main.jsx
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import App from './App.jsx'
-import HomePage from './pages/HomePage.jsx'
-import BolsaPage from './pages/BolsaPage.jsx'
-import FavoritesPage from './pages/FavoritesPage.jsx'
-import CadastroBolsista from './pages/CadastroBolsista.jsx'
-import Login from './pages/Login.jsx'
-import RegisterForm from './pages/RegisterForm.jsx'
-import MyOportunities from './pages/MyOportunities.jsx'
-import MyCourses from './pages/MyCourses.jsx'
+import App from './App.jsx';
+import HomePage from './pages/HomePage.jsx';
+import BolsaPage from './pages/BolsaPage.jsx';
+import FavoritesPage from './pages/FavoritesPage.jsx';
+import CadastroBolsista from './pages/CadastroBolsista.jsx';
+import Login from './pages/Login.jsx';
+import RegisterForm from './pages/RegisterForm.jsx';
+import MyOportunities from './pages/MyOportunities.jsx';
+import MyCourses from './pages/MyCourses.jsx';
 
-import AdminLayout from './components/admin/AdminLayout.jsx'
-import Dashboard from  './pages/admin/Dashboard.jsx'
-import Institutions from './pages/admin/Institutions.jsx'
-import Courses from './pages/admin/Courses.jsx'
-import Users from './pages/admin/Users.jsx'
+// Componentes do Admin
+import AdminLayout from './components/admin/AdminLayout.jsx';
+import Dashboard from  './pages/admin/Dashboard.jsx';
+import Institutions from './pages/admin/Institutions.jsx';
+import InstitutionForm from './pages/admin/InstitutionForm.jsx';
+import Courses from './pages/admin/Courses.jsx';
+import CourseForm from './pages/admin/CoursesForm.jsx'; 
+import Users from './pages/admin/Users.jsx';
+// import UserForm from './pages/admin/UserForm.jsx'; // Adicione se/quando criar UserForm
+import ScholarshipHolders from './pages/admin/ScholarshipHolders.jsx';
+import ScholarshipHolderForm from './pages/admin/ScholarshipHolderForm.jsx';
+import Inscriptions from './pages/admin/Inscriptions.jsx';
+import InscriptionDetails from './pages/admin/InscripitionDetails.jsx'; // Corrigido: InscripitionDetails -> InscriptionDetails
+// import Dependents from './pages/admin/Dependents.jsx'; // Adicione se/quando criar
+// import DependentForm from './pages/admin/DependentForm.jsx'; // Adicione se/quando criar
 
-import PrivateRoute from './components/PrivateRoute.jsx'
+import PrivateRoute from './components/PrivateRoute.jsx';
+import { ThemeProvider } from './contexts/ThemeContext.jsx'
+import { AppProvider } from './contexts/AppContext.jsx';
+import { OpportunitiesProvider } from './contexts/OpportunitiesContext.jsx';
 
-import { AppProvider } from './contexts/AppContext.jsx'
-import { OpportunitiesProvider } from './contexts/OpportunitiesContext.jsx'
-
-import './index.css'
+import './index.css';
 
 const router = createBrowserRouter([
   {
@@ -41,28 +52,46 @@ const router = createBrowserRouter([
     ],
   },
   {
-    element: <PrivateRoute />, // Protege as rotas admin
+    element: <PrivateRoute roles={["ROLE_ADMIN"]} redirectTo="/login" />, 
     children: [
       {
         path: "/admin",
-        element: <AdminLayout />,
+        element: (
+          <ThemeProvider>
+            <AdminLayout />
+          </ThemeProvider>
+        ),
         children: [
           { path: "dashboard", element: <Dashboard /> },
           { path: "institutions", element: <Institutions /> },
+          { path: "institutions/new", element: <InstitutionForm /> },
+          { path: "institutions/edit/:id", element: <InstitutionForm /> },
           { path: "courses", element: <Courses /> },
+          { path: "courses/new", element: <CourseForm /> },
+          { path: "courses/edit/:id", element: <CourseForm /> },
           { path: "users", element: <Users /> },
+          // { path: "users/new", element: <UserForm /> }, // Adicione quando UserForm estiver pronto
+          // { path: "users/edit/:id", element: <UserForm /> }, // Adicione quando UserForm estiver pronto
+          { path: "scholarship-holders", element: <ScholarshipHolders /> },
+          { path: "scholarship-holders/new", element: <ScholarshipHolderForm /> }, 
+          { path: "scholarship-holders/edit/:id", element: <ScholarshipHolderForm /> },
+          { path: "inscriptions", element: <Inscriptions /> },
+          { path: "inscriptions/:id", element: <InscriptionDetails /> },
+          // { path: "dependents", element: <Dependents /> }, // Adicione quando estiver pronto
         ]
       }
     ]
   }
-])
+]);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AppProvider>
       <OpportunitiesProvider>
+        {/* Se ThemeProvider deve envolver toda a app, mova-o para cá. 
+            Se for só para o admin, a colocação atual está correta. */}
         <RouterProvider router={router} />
       </OpportunitiesProvider>
     </AppProvider>
   </StrictMode>
-)
+);

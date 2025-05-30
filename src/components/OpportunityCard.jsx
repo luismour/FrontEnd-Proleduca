@@ -13,6 +13,7 @@ export default function OpportunityCard({
   percent,
   isFavorite,
   onToggleFavorite,
+  city,
   description,
   status
 }) {
@@ -53,7 +54,7 @@ export default function OpportunityCard({
           {/* Turno e Localização (esquerda) */}
           <div className="text-sm text-black">
             <p>{turno}</p>
-            <p>{location}</p>
+            <p>{city}</p>
           </div>
 
           {/* Preços */}
