@@ -1,24 +1,51 @@
-import React from 'react';
+// src/pages/CadastroBolsista.tsx
+
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useOpportunities } from '../contexts/OpportunitiesContext.jsx';
-import { locationsData } from '../data/localInfos';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 
 export default function CadastroBolsista() {
-  const { id } = useParams(); 
-  const { opportunities } = useOpportunities(); 
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  const opportunity = opportunities.find(o => o.id === Number(id));
-  const location = opportunity ? locationsData[opportunity.institution] : null;
+  const [opportunity, setOpportunity] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log("Usuário logado:", user);
+  console.log("ID do usuário:", user?.id);
 
-  const user = JSON.parse(localStorage.getItem("user")); 
+  useEffect(() => {
+    async function fetchOpportunity() {
+      try {
+        const res = await axiosInstance.get(`/courses/${id}`);
+        setOpportunity(res.data);
+      } catch (error) {
+        console.error("Erro ao buscar dados da oportunidade:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  if (!opportunity || !location || !user) {
+    fetchOpportunity();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <p>Carregando...</p>
+      </main>
+    );
+  }
+
+  const inst = opportunity?.institutions;
+  const location = inst
+    ? `${inst.street ?? '-'}, ${inst.number ?? '-'} - ${inst.city ?? '-'} / ${inst.state ?? '-'}`
+    : 'Localização não disponível';
+
+  if (!opportunity || !inst || !user) {
     return (
       <main className="min-h-screen flex items-center justify-center p-4">
         <p className="text-gray-600 text-lg">Dados da oportunidade não encontrados.</p>
@@ -27,170 +54,147 @@ export default function CadastroBolsista() {
   }
 
   const initialValues = {
-    nome: '',
+    fullName: '',
     cpf: '',
-    nascimento: '',
-    necessidades: '',
-    raca: '',
+    dateOfBirth: '',
+    needs: '',
+    raceColor: '',
   };
 
-  function validarCPF(cpf) {
-    // Remove os caracteres não numéricos
+  const validarCPF = (cpf) => {
     cpf = cpf.replace(/[^\d]+/g, '');
-  
-    // Verifica se o CPF tem 11 dígitos
-    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
-      return false;
-    }
-  
-    // Verifica os dois dígitos verificadores
-    let soma = 0;
-    let resto;
-  
-    // Valida o primeiro dígito verificador
-    for (let i = 0; i < 9; i++) {
-      soma += parseInt(cpf.charAt(i)) * (10 - i);
-    }
-  
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    let soma = 0, resto;
+    for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
     resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) {
-      resto = 0;
-    }
-    if (resto !== parseInt(cpf.charAt(9))) {
-      return false;
-    }
-  
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.charAt(9))) return false;
     soma = 0;
-    // Valida o segundo dígito verificador
-    for (let i = 0; i < 10; i++) {
-      soma += parseInt(cpf.charAt(i)) * (11 - i);
-    }
-    
+    for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
     resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) {
-      resto = 0;
-    }
-    if (resto !== parseInt(cpf.charAt(10))) {
-      return false;
-    }
-  
-    return true;
-  }
+    if (resto === 10 || resto === 11) resto = 0;
+    return resto === parseInt(cpf.charAt(10));
+  };
 
   const validationSchema = Yup.object().shape({
-    nome: Yup.string().required('Campo obrigatório'),
+    fullName: Yup.string().required('Campo obrigatório'),
     cpf: Yup.string()
-      .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Formato inválido. Use XXX.XXX.XXX-XX')
-      .test('valid-cpf', 'CPF inválido', (value) => validarCPF(value)) // Aqui adiciona a verificação do CPF
+      .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Formato inválido (000.000.000-00)')
+      .test('valid-cpf', 'CPF inválido', validarCPF)
       .required('Campo obrigatório'),
-    nascimento: Yup.date()
-      .max(new Date(), 'Data inválida')
-      .required('Campo obrigatório'),
-    necessidades: Yup.string().required('Campo obrigatório'),
-    raca: Yup.string().required('Campo obrigatório'),
+    dateOfBirth: Yup.date().max(new Date(), 'Data inválida').required('Campo obrigatório'),
+    needs: Yup.string().required('Campo obrigatório'),
+    raceColor: Yup.string().required('Campo obrigatório'),
   });
-  
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // 1. Criar bolsista
-      const bolsistaResponse = await axios.post('http://localhost:5000/bolsistas', {
-        cliente_id: user.id, // precisa ter sido salvo no login
-        nome_completo: values.nome,
-        cpf: values.cpf,
-        data_nascimento: values.nascimento,
-        necessidades: values.necessidades.toLowerCase() !== 'nenhuma',
-        raca_cor: values.raca,
+      // Formata o CPF removendo caracteres
+      const cpfSemFormatacao = values.cpf.replace(/[^\d]/g, '');
+
+      // Converte a necessidade especial para booleano
+      const needsBoolean = values.needs.toLowerCase() !== 'nenhuma';
+
+      // Cria o bolsista
+      const bolsistaRes = await axiosInstance.post('/scholarship-holders/create', {
+        customers: user.id,
+        fullName: values.fullName,
+        cpf: cpfSemFormatacao,
+        dateOfBirth: values.dateOfBirth,
+        needs: needsBoolean,
+        raceColor: values.raceColor,
       });
 
-      const bolsistaId = bolsistaResponse.data.id;
+      const bolsistaId = bolsistaRes.data.id;
 
-      // 2. Criar inscrição
-      await axios.post('http://localhost:5000/bolsistas', {
-        bolsista_id: bolsistaId,
-        curso_id: opportunity.id,
-        data_inscricao: new Date().toISOString().split('T')[0],
-        status: 'Pendente',
+      // Cria a inscrição
+      await axiosInstance.post('/registrations/create', {
+        scholarshipHolders: bolsistaId,
+        courses: opportunity.id,
+        registrationDate: new Date().toISOString().split('T')[0],
+        status: 'Ativo',
       });
 
       alert('Inscrição realizada com sucesso!');
+      resetForm();
       navigate('/minhas-bolsas');
-
     } catch (error) {
       console.error('Erro ao enviar dados:', error);
-      alert('Erro ao realizar inscrição. Tente novamente.');
+      alert('Erro ao realizar inscrição. Por favor, tente novamente.');
     } finally {
       setSubmitting(false);
     }
   };
 
+
   return (
     <>
-      <main className="min-h-[calc(100vh-300px)] bg-gray-100 flex items-center justify-center px-20">
-        <div className="w-full max-w-3xl bg-white rounded-xl shadow-md p-20 mt-20">
-          <div className="flex items-center gap-3 mb-6">
-            <img src={location.icon} alt="Logo da instituição" className="w-20 h-20" />
+      <main className="min-h-[calc(100vh-300px)] bg-gray-100 flex items-center justify-center px-4 md:px-20">
+        <div className="w-full max-w-3xl bg-white rounded-xl shadow-md p-6 md:p-10 mt-10">
+          <div className="mb-6">
             <h1 className="text-xl font-semibold text-gray-800">
-              {opportunity.course} na {opportunity.institution}
+              {opportunity.name} na {inst.name}
             </h1>
+            <p className="text-sm text-gray-600">Local: {location}</p>
           </div>
 
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
+          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
             {({ isSubmitting }) => (
-              <Form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Nome Completo */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
                   <Field
                     type="text"
-                    name="nome"
-                    placeholder="Ex: Pedro Ferreira Moura"
-                    className="mt-1 w-full p-3 bg-gray-100 border border-gray-300 rounded-md placeholder-gray-500 text-sm"
+                    name="fullName"
+                    placeholder="Ex: João da Silva"
+                    className="w-full p-3 border border-gray-300 rounded-md"
                   />
-                  <ErrorMessage name="nome" component="div" className="text-red-600 text-sm mt-1" />
+                  <ErrorMessage name="fullName" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
 
+                {/* CPF */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">CPF</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">CPF</label>
                   <Field
                     type="text"
                     name="cpf"
-                    placeholder="Ex: 000.000.000-00"
-                    className="mt-1 w-full p-3 bg-gray-100 border border-gray-300 rounded-md placeholder-gray-500 text-sm"
+                    placeholder="000.000.000-00"
+                    className="w-full p-3 border border-gray-300 rounded-md"
                   />
-                  <ErrorMessage name="cpf" component="div" className="text-red-600 text-sm mt-1" />
+                  <ErrorMessage name="cpf" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
 
+                {/* Data de Nascimento */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Data de nascimento</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento</label>
                   <Field
                     type="date"
-                    name="nascimento"
-                    className="mt-1 w-full p-3 bg-gray-100 border border-gray-300 rounded-md placeholder-gray-500 text-sm"
+                    name="dateOfBirth"
+                    className="w-full p-3 border border-gray-300 rounded-md"
                   />
-                  <ErrorMessage name="nascimento" component="div" className="text-red-600 text-sm mt-1" />
+                  <ErrorMessage name="dateOfBirth" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
 
+                {/* Necessidades Especiais */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Necessidades especiais</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Necessidades Especiais</label>
                   <Field
                     type="text"
-                    name="necessidades"
+                    name="needs"
                     placeholder="Ex: Nenhuma"
-                    className="mt-1 w-full p-3 bg-gray-100 border border-gray-300 rounded-md placeholder-gray-500 text-sm"
+                    className="w-full p-3 border border-gray-300 rounded-md"
                   />
-                  <ErrorMessage name="necessidades" component="div" className="text-red-600 text-sm mt-1" />
+                  <ErrorMessage name="needs" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
 
+                {/* Raça/Cor */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">Raça/Cor</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Raça/Cor</label>
                   <Field
                     as="select"
-                    name="raca"
-                    className="mt-1 w-full p-3 bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700"
+                    name="raceColor"
+                    className="w-full p-3 border border-gray-300 rounded-md bg-white"
                   >
                     <option value="">Selecione...</option>
                     <option value="Branca">Branca</option>
@@ -200,14 +204,15 @@ export default function CadastroBolsista() {
                     <option value="Indígena">Indígena</option>
                     <option value="Prefiro não dizer">Prefiro não dizer</option>
                   </Field>
-                  <ErrorMessage name="raca" component="div" className="text-red-600 text-sm mt-1" />
+                  <ErrorMessage name="raceColor" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
 
-                <div className="md:col-span-2 mt-6 text-center">
+                {/* Botão de Enviar */}
+                <div className="md:col-span-2 text-center mt-6">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-blue-600 text-white px-10 py-4 rounded-md shadow-md hover:bg-blue-700 transition text-sm font-medium"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-md shadow-md transition"
                   >
                     {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
                   </button>

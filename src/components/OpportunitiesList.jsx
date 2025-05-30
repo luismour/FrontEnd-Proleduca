@@ -5,6 +5,7 @@ import { filtrarOportunidades } from '../utils/filtrarOportunidades';
 import FiltroCursos from './FiltroCursos';
 import Steps from './Steps';
 import axios from 'axios';
+import axiosInstance from '../api/axiosInstance.js';
 
 export default function OpportunitiesList() {
   const { opportunities, setOpportunities } = useOpportunities();
@@ -13,8 +14,11 @@ export default function OpportunitiesList() {
 
   useEffect(() => {
     const fetchCursos = async () => {
+
+      const token = localStorage.getItem('token');
+
       try {
-        const response = await axios.get('http://localhost:8080/courses'); 
+        const response = await axiosInstance.get('/courses')
         const cursos = response.data;
 
         const oportunidades = cursos.map((curso) => {
@@ -47,9 +51,9 @@ export default function OpportunitiesList() {
 
   const getLogoUrl = (instituicaoId) => {
     const logos = {
-      1: '/ficr_logo.png',
-      2: '/estacio_logo.png',
-      3: '/uninassau_logo.png',
+      1: '/cover_ficr.png',
+      2: '/cover_estacio.png',
+      3: '/cover_uninassau.png',
     };
     return logos[instituicaoId] || '/default_logo.png';
   };

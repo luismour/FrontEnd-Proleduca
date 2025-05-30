@@ -3,6 +3,7 @@ import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../api/axiosInstance";
 
 export default function RegisterForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -68,11 +69,11 @@ export default function RegisterForm() {
       cpf: values.cpf,
       dateOfBirth: values.dateOfBirth,
       phone: values.phone,
-      status: true
+      status: true,
     };
 
-    axios
-      .post("http://localhost:8080/customers/create", payload) // 
+    axiosInstance
+      .post("/customers/create", payload) // 
       .then(() => {
         setSubmitted(true);
         setSubmitting(false);
@@ -82,6 +83,7 @@ export default function RegisterForm() {
         console.error("Erro ao cadastrar:", err);
         setSubmitting(false);
       });
+      console.log("Cadastro realizado com sucesso:", values);
   };
 
   return (

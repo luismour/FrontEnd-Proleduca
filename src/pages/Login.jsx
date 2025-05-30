@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import axiosInstance from "../api/axiosInstance";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("E-mail inválido").required("Campo obrigatório"),
@@ -47,19 +48,27 @@ export default function Login() {
           setMessage("E-mail ou senha inválidos.");
         }
       } else {
-        const response = await axios.post("http://localhost:8080/edupass/login", values);
 
-        if (response.status === 200 && response.data && response.data.status !== false) {
-          const { token, cliente} = response.data;
-          localStorage.setItem("token", token);
-          localStorage.setItem("user", JSON.stringify(cliente));
-          
-          setMessage("Login realizado com sucesso!");
-          setUserLoggedIn(true);
-          navigate("/");
-        } else {
-          setMessage("E-mail ou senha inválidos.");
-        }
+        const response = await axiosInstance.post("/edupass/login", values);
+
+          if (response.status === 200 && response.data?.accessToken) {
+            const accessToken = response.data.accessToken;
+
+            console.log("TOKEN JWT:", accessToken); 
+
+            localStorage.setItem("token", accessToken);
+            localStorage.setItem("user", JSON.stringify({ email: values.email, id: response.data.customerId }));
+
+            const user = { email: values.email, id: response.data.customerId };
+            console.log("ID do usuário:", user?.id);
+            
+
+            setMessage("Login realizado com sucesso!");
+            setUserLoggedIn(true);
+            navigate("/");
+          } else {
+            setMessage("E-mail ou senha inválidos.");
+          }
       }
     } catch (error) {
       console.error("Erro ao conectar com o servidor:", error);
@@ -67,6 +76,8 @@ export default function Login() {
     } finally {
       setSubmitting(false);
     }
+    console.log("Valores do formulário:", values);
+
   };
 
   return (

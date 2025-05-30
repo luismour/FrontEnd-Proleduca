@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
+import axiosInstance from '../api/axiosInstance.js';
 
 export default function BolsaPage() {
   const { id } = useParams();
@@ -11,7 +12,7 @@ export default function BolsaPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/courses/${id}`)
+    axiosInstance.get(`/courses/${id}`)
       .then(response => {
         setOpportunity(response.data);
         setLoading(false);
@@ -29,8 +30,17 @@ export default function BolsaPage() {
 
   const inst = opportunity.institutions;
   const location = inst
-    ? `${inst.street ?? '-'}, ${inst.number ?? '-'}, ${inst.neighborhood ?? '-'} - ${inst.city ?? '-'} / ${inst.state ?? '-'}`
+    ? `${inst.street ?? '-'}, ${inst.number ?? '-'} - ${inst.city ?? '-'} / ${inst.state ?? '-'}`
     : 'Informações da instituição não disponíveis';
+
+     const getLogoUrl = (instituicaoId) => {
+    const logos = {
+      1: '/cover_ficr.png',
+      2: '/cover_estacio.png',
+      3: '/cover_uninassau.png',
+    };
+    return logos[instituicaoId] || '/default_logo.png';
+  };
 
   return (
     <>
@@ -40,8 +50,7 @@ export default function BolsaPage() {
           {/* Coluna Esquerda */}
           <div className="flex-1">
             <img
-              /*src={inst?.urlImage || opportunity.imageUrl} */
-              src={"/cover_ficr.png"}
+              src={inst?.urlImage || opportunity.imageUrl}
               alt={inst?.name || opportunity.name}
               className="w-full"
             />
