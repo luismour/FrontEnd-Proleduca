@@ -30,7 +30,7 @@ import InscriptionDetails from './pages/admin/InscripitionDetails.jsx'; // Corri
 // import DependentForm from './pages/admin/DependentForm.jsx'; // Adicione se/quando criar
 
 import PrivateRoute from './components/PrivateRoute.jsx';
-import { ThemeProvider } from './contexts/ThemeContext.jsx'
+
 import { AppProvider } from './contexts/AppContext.jsx';
 import { OpportunitiesProvider } from './contexts/OpportunitiesContext.jsx';
 
@@ -56,11 +56,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/admin",
-        element: (
-          <ThemeProvider>
-            <AdminLayout />
-          </ThemeProvider>
-        ),
+        element: <AdminLayout />,
         children: [
           { path: "dashboard", element: <Dashboard /> },
           { path: "institutions", element: <Institutions /> },

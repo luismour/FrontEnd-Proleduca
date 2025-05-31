@@ -1,17 +1,13 @@
-// src/components/admin/AdminLayout.jsx
 import { Outlet } from "react-router-dom";
 import SidebarAdmin from "./SidebarAdmin";
 
 export default function AdminLayout() {
   return (
-    // A classe 'dark' no elemento <html> (aplicada pelo ThemeContext)
-    // fará com que as classes dark: deste componente e de seus filhos funcionem.
-    <div className="relative flex min-h-screen bg-gray-100 dark:bg-slate-900">
+    <div className="relative flex min-h-screen"> {/* Adicionado relative e min-h-screen no wrapper se necessário */}
       <SidebarAdmin />
-      <main className="flex-1 ml-64 transition-colors duration-300">
-        {/* A cor de fundo da <main> pode ser a mesma do wrapper ou omitida para herdar */}
-        {/* Se quiser um fundo diferente para <main> no modo escuro, adicione dark:bg-outro-tom-escuro aqui */}
-        <div className="p-4 sm:p-6 lg:p-8">
+      {/* Conteúdo principal com margem à esquerda para compensar a sidebar fixa */}
+      <main className="flex-1 bg-gray-100 min-h-screen ml-64"> {/* <--- ADICIONADO ml-64 */}
+        <div className="p-4 md:p-6 lg:p-8"> {/* Adicionado um padding interno ao main */}
           <Outlet />
         </div>
       </main>
