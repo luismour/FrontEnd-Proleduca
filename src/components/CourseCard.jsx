@@ -1,68 +1,71 @@
-import React from "react";
+// src/components/OpportunityCard.jsx
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const statusClasses = {
-  Confirmado: "bg-blue-600 text-white",
-  Pendente: "bg-yellow-400 text-white",
-  Cancelado: "bg-red-500 text-white",
-};
+export default function OpportunityCard({
+  id,
+  logoUrl,
+  institution,
+  course,
+  turno,
+  city,
+  state,
+  originalPrice,
+  discountedPrice,
+  percent,
+}) {
+  const locationString = [city, state].filter(Boolean).join(', ');
 
-export default function CourseCard({ curso }) {
   return (
-    <div
-      className={`bg-white shadow border-l-4 rounded-lg p-4 ${
-        statusClasses[curso.status] || "border-gray-300"
-      }`}
+    <Link 
+      to={`/bolsa/${id}`} 
+      className="block group rounded-xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 h-full"
     >
-      {/* Topo */}
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-500">{curso.dataAdesao}</div>
-        {curso.status === "Confirmado" && (
-          <button className="text-sm text-white bg-blue-600 font-semibold px-4 py-1 rounded hover:bg-blue-700">
-            Baixar comprovante de adesão
-          </button>
-        )}
-      </div>
+      <div className="relative bg-white border border-slate-200 h-full rounded-xl p-4 shadow-lg hover:shadow-xl focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 transition-all duration-300 flex flex-col justify-between min-h-[350px] group-hover:border-blue-400">
+        
+        <div> 
+          {percent && (
+            <div className="absolute top-3 left-3 bg-orange-400 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm z-10">
+              Bolsa {percent}
+            </div>
+          )}
 
-      {/* Conteúdo principal */}
-      <div className="flex items-center gap-4 mt-2">
-        <img
-          src={curso.logoUrl}
-          alt={curso.instituicao}
-          className="w-20 h-20 object-contain"
-        />
-        <div className="flex-1">
-          <h2 className="font-bold text-lg">{curso.curso}</h2>
-          <p className="text-sm text-gray-600">{curso.instituicao}</p>
+          <div className="flex flex-col items-center pt-8 pb-3">
+            <div className="w-full h-20 flex justify-center items-center mb-4 px-2">
+              <img
+                src={logoUrl || 'https://via.placeholder.com/200x80/E2E8F0/94A3B8?text=Logo'}
+                alt={institution || 'Logo da Instituição'}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+            <h3 className="text-center text-md font-semibold text-slate-800 mb-1 leading-tight group-hover:text-blue-600 transition-colors px-1 h-12 line-clamp-2">
+              {course || 'Nome do Curso Indisponível'}
+            </h3>
+            <p className="text-center text-xs text-slate-500 mb-3 px-1 truncate w-full">
+              {institution || 'Instituição Indisponível'}
+            </p>
+          </div>
         </div>
 
-        <div className="text-center">
-          <p className="text-xs text-gray-500">STATUS DA ADESÃO</p>
-          <p
-            className={`text-sm font-semibold px-2 py-1 rounded ${
-              statusClasses[curso.status]
-            }`}
-          >
-            {curso.status}
-          </p>
-        </div>
-
-        <div className="text-right">
-          <p className="text-xs text-gray-500">MENSALIDADE</p>
-          <p className="text-base font-bold text-black">{curso.mensalidade}</p>
+        <div className="mt-auto pt-3 border-t border-slate-100">
+          <div className="flex justify-between items-end">
+            <div className="text-xs text-slate-600 space-y-0.5">
+              {turno && <p className="truncate">{turno}</p>}
+              {locationString && <p className="truncate font-medium">{locationString}</p>}
+            </div>
+            <div className="flex flex-col items-end text-right">
+              {originalPrice && originalPrice !== '-' && (
+                <p className="text-slate-400 text-xs line-through">
+                  {originalPrice}
+                </p>
+              )}
+              <p className="text-orange-500 text-xl font-bold">
+                {discountedPrice || 'N/A'}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Ações */}
-      <div className="flex justify-end mt-4 gap-4">
-        {curso.status !== "Confirmado" && (
-          <button className="text-sm font-semibold px-4 py-1 rounded border border-blue-600 text-blue-600 hover:bg-blue-50">
-            Procurar uma nova bolsa
-          </button>
-        )}
-        <button className="text-sm font-semibold px-4 py-1 rounded text-blue-600 hover:underline">
-          Ver detalhes da bolsa
-        </button>
-      </div>
-    </div>
+    </Link>
   );
 }

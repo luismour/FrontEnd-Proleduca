@@ -48,7 +48,7 @@ export default function MyOportunities() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")); // user.id é o customerId
 
   const [loggedInCustomerCpf, setLoggedInCustomerCpf] = useState(null);
 
@@ -56,35 +56,61 @@ export default function MyOportunities() {
     if (!user || !user.id) {
       setError("Usuário não autenticado.");
       setLoading(false);
-      navigate("/login");
+      if (window.location.pathname !== "/login") navigate("/login");
       return;
     }
 
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await axiosInstance.get(`/registrations/user/${user.id}`);
-      
+      // Usando a rota /registrations/:id onde :id é o customerId (user.id)
+      // Esta rota, conforme seu log, retorna um objeto único.
+      // Se a rota para listar TODAS as inscrições de um usuário for diferente, ajuste aqui.
+      // Por exemplo, se for /registrations/user/${user.id}, use essa.
+      const response = await axiosInstance.get(`/registrations/${user.id}`); 
+      console.log("API Response Data (esperando objeto ou array):", response.data);
+
+      let sourceArray = []; 
+
+      if (Array.isArray(response.data)) {
+        // Caso 1: A API retorna um array (ideal para uma lista)
+        sourceArray = response.data;
+      } else if (response.data && typeof response.data === 'object' && response.data !== null && response.data.id !== undefined && response.data.scholarshipHolders !== undefined) {
+        // Caso 2: A API retorna um ÚNICO objeto de inscrição (conforme seu log recente)
+        sourceArray = [response.data]; // Envolve o objeto em um array
+        console.log("API retornou um objeto único, tratando como array de um item:", sourceArray);
+      } else if (response.data && Array.isArray(response.data.content)) { 
+        // Caso 3: A API retorna um objeto de paginação (precaução)
+        sourceArray = response.data.content;
+        console.log("API retornou estrutura paginada, usando 'content':", sourceArray);
+      } else {
+        // Caso 4: Resposta inesperada ou vazia que não se encaixa nos padrões acima
+        console.warn("Resposta da API para inscrições não é um array ou objeto de inscrição único esperado. Data:", response.data);
+        sourceArray = []; // Trata como nenhuma inscrição para evitar erro no .map
+      }
+
       let currentCustomerCpf = loggedInCustomerCpf;
 
-      if (!currentCustomerCpf && response.data && response.data.length > 0) {
-        // Tenta extrair o CPF do cliente logado do primeiro registro,
-        // se o 'customers' aninhado for o cliente logado.
-        const firstReg = response.data[0];
+      if (!currentCustomerCpf && sourceArray.length > 0) {
+        const firstReg = sourceArray[0];
         if (firstReg.scholarshipHolders && 
             firstReg.scholarshipHolders.customers && 
             firstReg.scholarshipHolders.customers.id === user.id && 
             firstReg.scholarshipHolders.customers.cpf) {
           currentCustomerCpf = firstReg.scholarshipHolders.customers.cpf.replace(/[^\d]/g, '');
-          setLoggedInCustomerCpf(currentCustomerCpf); // Atualiza o estado para persistir
+          setLoggedInCustomerCpf(currentCustomerCpf);
         } else {
-            console.warn("Não foi possível extrair o CPF do cliente logado a partir dos dados das inscrições.");
+          console.warn("Não foi possível extrair o CPF do cliente logado dos dados da inscrição (primeiro item).");
         }
       }
 
-      const processedRegistrations = response.data.map(reg => {
+      if (!currentCustomerCpf && sourceArray.length > 0) { // Se ainda não conseguiu o CPF do cliente
+         console.warn("CPF do cliente logado não pôde ser determinado. A diferenciação 'Dependente' pode não ser precisa.");
+      }
+
+      const processedRegistrations = sourceArray.map(reg => {
         const scholarshipHolder = reg.scholarshipHolders || {};
         const scholarshipHolderCpfClean = scholarshipHolder.cpf ? scholarshipHolder.cpf.replace(/[^\d]/g, '') : null;
-        
+        // Usa currentCustomerCpf (que pode ser null se não encontrado)
         const isOwnScholarship = currentCustomerCpf && scholarshipHolderCpfClean === currentCustomerCpf;
         
         return {
@@ -92,8 +118,7 @@ export default function MyOportunities() {
           beneficiaryName: scholarshipHolder.fullName || 'Beneficiário não informado',
           isOwnScholarship: isOwnScholarship,
           scholarshipHolderId: scholarshipHolder.id,
-          // Garante que course e institutions existam para evitar erros no render
-          course: reg.courses || {},
+          course: reg.courses || {}, 
           institution: reg.courses?.institutions || {}
         };
       }).sort((a, b) => {
@@ -106,8 +131,12 @@ export default function MyOportunities() {
       setError(null);
     } catch (err) {
       console.error("Erro ao buscar inscrições:", err);
-      setError(err.response?.data?.message || "Não foi possível carregar suas inscrições.");
-      // O interceptor de axiosInstance já deve tratar erros 401
+      if (err.response && err.response.status === 404) {
+        setError("Nenhuma inscrição encontrada para este usuário.");
+        setRegistrations([]); 
+      } else {
+        setError(err.response?.data?.message || "Não foi possível carregar suas inscrições.");
+      }
     } finally {
       setLoading(false);
     }
@@ -116,10 +145,10 @@ export default function MyOportunities() {
   useEffect(() => {
     if (user && user.id) {
         fetchRegistrations();
-    } else if (!user && !loading) { // Evita redirecionamento se já estiver carregando ou se não houver usuário
-        navigate("/login");
+    } else if (!user && !loading) {
+        if (window.location.pathname !== "/login") navigate("/login");
     }
-  }, [user, navigate, fetchRegistrations]); // fetchRegistrations agora é uma dependência estável se loggedInCustomerCpf não mudar frequentemente no início
+  }, [user, navigate, fetchRegistrations]);
 
 
   const handleCancelRegistration = async (registrationId) => {
@@ -133,28 +162,17 @@ export default function MyOportunities() {
         return;
       }
 
-      // Conforme o payload esperado pela sua API de PUT em /registrations/{id}
-      // O exemplo fornecido da API (`/registrations/5`) é um GET.
-      // Para um PUT, geralmente se envia o corpo da alteração.
-      // Se a API só precisa do status: { status: 'Cancelado' }
-      // Se precisa de mais, ajuste o payload.
-      // Baseado no seu `CadastroBolsista`, parece que o backend pode aceitar um payload mais completo
-      // ou apenas os IDs para os campos aninhados.
       const payload = {
-        // Mantenha os campos que a API espera para atualização.
-        // Se a API reconstruir o objeto com base nos IDs, envie-os.
-        // Se a API espera o objeto completo com apenas o status alterado, será diferente.
-        // Vamos supor um payload mais simples que apenas atualiza o status e IDs relevantes.
         status: 'Cancelado',
-        registrationDate: registrationToUpdate.registrationDate, // A API pode ignorar ou requerer
+        registrationDate: registrationToUpdate.registrationDate, // Manter outros campos se a API exigir
         scholarshipHolderId: registrationToUpdate.scholarshipHolderId,
         courseId: registrationToUpdate.course?.id,
-        // Adicione outros campos conforme exigido pelo seu backend para a rota PUT registrations/{id}
+        // Verifique se sua API precisa de mais algum campo para o PUT em /registrations/:registrationId
       };
 
       await axiosInstance.put(`/registrations/${registrationId}`, payload);
       alert("Inscrição cancelada com sucesso!");
-      fetchRegistrations();
+      fetchRegistrations(); 
     } catch (err) {
       console.error("Erro ao cancelar inscrição:", err.response?.data || err.message);
       alert(`Erro ao cancelar inscrição: ${err.response?.data?.message || 'Ocorreu um erro.'}`);
@@ -181,14 +199,13 @@ export default function MyOportunities() {
           </p>
         </div>
 
-        {/* Tratamento de Erro e Lista Vazia */}
         {!loading && error && (
           <div className="text-center py-10">
             <p className="text-red-500 dark:text-red-400 text-lg">{error}</p>
             <button onClick={fetchRegistrations} className="mt-4 btn btn-primary">Tentar Novamente</button>
           </div>
         )}
-        {!loading && !error && registrations.length === 0 && (
+        {!loading && !error && registrations.length === 0 && ( 
           <div className="text-center py-10">
             <p className="text-gray-600 dark:text-gray-400 text-lg">Você ainda não possui bolsas ou inscrições associadas à sua conta.</p>
             <button onClick={() => navigate('/')} className="mt-4 btn btn-primary">
@@ -197,11 +214,9 @@ export default function MyOportunities() {
           </div>
         )}
 
-        {/* Lista de Bolsas */}
         {!loading && !error && registrations.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {registrations.map((registration) => {
-              // Usando os campos 'course' e 'institution' que foram garantidos no processamento
               const course = registration.course; 
               const institution = registration.institution;
               const location = [institution.city, institution.state].filter(Boolean).join(', ') || 'Não informada';
@@ -214,7 +229,7 @@ export default function MyOportunities() {
                   <div className="p-6 flex-grow">
                     <div className="flex items-start space-x-4 mb-4">
                       <img 
-                        src={institution.urlImage || defaultLogo} // 'urlImage' conforme seu JSON
+                        src={institution.urlImage || defaultLogo}
                         alt={`Logo ${institution.name || 'da instituição'}`}
                         className="w-16 h-16 rounded-md object-contain flex-shrink-0 border border-gray-200 dark:border-gray-700" 
                       />
@@ -241,14 +256,14 @@ export default function MyOportunities() {
                       <StatusBadge status={registration.status} />
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Data da Inscrição: {new Date(registration.registrationDate).toLocaleDateString()}
+                      Data da Inscrição: {registration.registrationDate ? new Date(registration.registrationDate).toLocaleDateString() : 'N/A'}
                     </p>
                   </div>
 
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 border-t border-gray-200 dark:border-gray-600">
                     <div className="flex flex-col sm:flex-row sm:justify-between space-y-2 sm:space-y-0 sm:space-x-2">
                       <button 
-                        onClick={() => navigate(`/bolsa/${course.id}`)}
+                        onClick={() => navigate(`/bolsa/${course.id}`)} // Navega para detalhes do curso/bolsa
                         className="w-full sm:w-auto btn btn-secondary text-sm py-2 px-4"
                         disabled={!course.id}
                       >
@@ -257,7 +272,7 @@ export default function MyOportunities() {
                       {registration.status && registration.status.toLowerCase() !== 'cancelado' && (
                         <button 
                           onClick={() => handleCancelRegistration(registration.id)}
-                          className="w-full sm:w-auto btn btn-danger text-sm py-2 px-4"
+                          className="w-full sm:w-auto btn btn-danger text-sm py-2 px-4" // Adicione a classe .btn-danger aos seus estilos globais se necessário
                         >
                           Cancelar Inscrição
                         </button>

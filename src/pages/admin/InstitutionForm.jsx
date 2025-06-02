@@ -35,7 +35,7 @@ export default function InstitutionForm() {
   const [error, setError] = useState(null);
   const [cepError, setCepError] = useState(null);
   const navigate = useNavigate();
-  const { id: institutionId } = useParams(); // Pega o 'id' da URL se estiver editando
+  const { id: institutionId } = useParams(); 
 
   const institutionTypes = ["Superior", "Escola", "Técnico", "Idiomas", "Pós"];
 
@@ -44,17 +44,17 @@ export default function InstitutionForm() {
       setIsLoading(true);
       axiosInstance.get(`/institutions/${institutionId}`)
         .then(res => {
-          const { id, ...institutionData } = res.data; // Não queremos o 'id' no formData
+          const { id, ...institutionData } = res.data; 
           setFormData({ ...initialFormState, ...institutionData, status: typeof institutionData.status === 'boolean' ? institutionData.status : true });
         })
         .catch(err => {
           console.error("Erro ao buscar dados da instituição para edição:", err);
           setError("Não foi possível carregar os dados da instituição para edição.");
-          // Poderia redirecionar ou mostrar uma mensagem mais proeminente
+         
         })
         .finally(() => setIsLoading(false));
     } else {
-      setFormData(initialFormState); // Garante que o formulário está limpo para criação
+      setFormData(initialFormState); 
     }
   }, [institutionId]);
 
@@ -127,7 +127,7 @@ export default function InstitutionForm() {
     }
   };
 
-  if (isLoading && institutionId) { // Mostra carregando apenas se estiver buscando dados para edição
+  if (isLoading && institutionId) { 
     return <div className="p-8 text-center">Carregando dados da instituição...</div>;
   }
 
@@ -241,8 +241,7 @@ export default function InstitutionForm() {
           <Link 
             to="/admin/institutions"
             type="button" 
-            className="btn btn-secondary w-full sm:w-auto text-center" // Adicionado text-center
-          >
+            className="btn btn-secondary w-full sm:w-auto text-center">
             Cancelar
           </Link>
           <button 

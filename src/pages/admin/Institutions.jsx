@@ -1,9 +1,9 @@
-// src/pages/admin/Institutions.jsx
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Adicionado useNavigate
-import axiosInstance from "../../api/axiosInstance"; //
 
-// Ícones (Exemplo SVG - você pode usar sua biblioteca de ícones)
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; 
+import axiosInstance from "../../api/axiosInstance"; 
+
+
 const PlusIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-2">
     <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
@@ -50,14 +50,13 @@ export default function Institutions() {
 
   const handleDelete = async (id) => {
     if (window.confirm("Tem certeza que deseja excluir esta instituição? Esta ação não pode ser desfeita.")) {
-      // Idealmente, o setIsLoading deveria ser granular para este item, ou um geral para a tabela
-      // Para simplificar, usamos o geral.
+
       setIsLoading(true); 
       setError(null);
       try {
         await axiosInstance.delete(`/institutions/${id}`);
         alert("Instituição excluída com sucesso!");
-        fetchInstitutions(); // Re-fetch para atualizar a lista
+        fetchInstitutions(); 
       } catch (err) {
         console.error("Erro ao excluir instituição:", err.response?.data || err.message);
         const apiError = err.response?.data?.message || `Falha ao excluir instituição.`;
@@ -77,7 +76,7 @@ export default function Institutions() {
         </h1>
         <Link
           to="/admin/institutions/new"
-          className="btn btn-primary inline-flex items-center w-full sm:w-auto justify-center" // Adicionado justify-center para mobile
+          className="btn btn-primary inline-flex items-center w-full sm:w-auto justify-center" 
         >
           <PlusIcon />
           Adicionar Instituição

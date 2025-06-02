@@ -6,11 +6,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axiosInstance from '../api/axiosInstance';
 import LoadingSpinner from '../components/LoadingSpinner';
-// Supondo que você tenha a função validarCPF em um arquivo de utilitários
-// Se não, defina-a aqui ou importe do local correto.
-// Exemplo: import { validarCPF } from '../utils/validations';
 
-// Definição da função validarCPF (se não estiver importando)
 const validarCPF = (cpf) => {
   if (!cpf) return false;
   cpf = cpf.replace(/[^\d]+/g, '');
@@ -29,12 +25,12 @@ const validarCPF = (cpf) => {
 
 
 export default function CadastroBolsista() {
-  const { id: opportunityId } = useParams(); // ID do curso/oportunidade
+  const { id: opportunityId } = useParams(); 
   const navigate = useNavigate();
 
   const [opportunity, setOpportunity] = useState(null);
   const [loading, setLoading] = useState(true);
-  const user = JSON.parse(localStorage.getItem("user")); // Dados do usuário logado
+  const user = JSON.parse(localStorage.getItem("user")); 
 
   useEffect(() => {
     async function fetchOpportunity() {
@@ -87,14 +83,13 @@ export default function CadastroBolsista() {
     ? `${inst.street || ''}, ${inst.number || ''} - ${inst.city || ''} / ${inst.state || ''}`.replace(/ , |, - | - /g, ', ').replace(/^,|, $/g, '')
     : 'Localização não disponível';
 
-  // Tenta pré-popular com dados do 'user' do localStorage se disponíveis
-  // Certifique-se que 'user.fullName' e 'user.cpf' existam no objeto 'user' do localStorage
+ 
   const initialValues = {
     fullName: user?.fullName || '', 
     cpf: user?.cpf || '', 
-    dateOfBirth: user?.dateOfBirth ? user.dateOfBirth.split('T')[0] : '', // Formato YYYY-MM-DD
-    needs: '', // 'Nenhuma' ou descrição da necessidade
-    raceColor: '', // ['Branca', 'Preta', 'Parda', 'Amarela', 'Indígena', 'Prefiro não dizer']
+    dateOfBirth: user?.dateOfBirth ? user.dateOfBirth.split('T')[0] : '', 
+    needs: '', 
+    raceColor: '', 
   };
 
   const validationSchema = Yup.object().shape({
@@ -107,13 +102,13 @@ export default function CadastroBolsista() {
       .required('Data de nascimento é obrigatória.')
       .transform((value, originalValue) => {
         if (originalValue && typeof originalValue === 'string') {
-          // Tenta converter DD/MM/YYYY para YYYY-MM-DD para o Yup.date()
+      
           const parts = originalValue.split('/');
           if (parts.length === 3 && parts[2].length === 4) {
-            return new Date(`${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`); // Adiciona T00:00:00 para evitar problemas de fuso
+            return new Date(`${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`); 
           }
-          // Se já for YYYY-MM-DD ou outro formato que Date entenda
-          const date = new Date(originalValue + "T00:00:00"); // Adiciona T00:00:00
+         
+          const date = new Date(originalValue + "T00:00:00"); 
           return isNaN(date.getTime()) ? undefined : date;
         }
         return value;
@@ -130,9 +125,9 @@ export default function CadastroBolsista() {
       const bolsistaPayload = {
         customers: user.id,
         fullName: values.fullName,
-        dateOfBirth: values.dateOfBirth, // O input type="date" já envia YYYY-MM-DD
+        dateOfBirth: values.dateOfBirth, 
         needs: needsBoolean,
-        cpf: cpfSemFormatacao, // Enviando CPF sem formatação. Verifique se o backend espera assim ou formatado.
+        cpf: cpfSemFormatacao, 
         raceColor: values.raceColor,
       };
 

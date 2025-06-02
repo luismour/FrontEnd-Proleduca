@@ -5,181 +5,158 @@ export default function FiltroCursos({ onBuscar }) {
   const [curso, setCurso] = useState('');
   const [instituicao, setInstituicao] = useState('');
   const [cidade, setCidade] = useState('Recife, PE');
-  const [bolsa, setBolsa] = useState(80);
+  const [bolsa, setBolsa] = useState(50);
   const [modalidade, setModalidade] = useState({
     presencial: true,
-    semi: true,
     ead: true,
   });
   const [tab, setTab] = useState('Superior');
-
-  // Lembre-se de AJUSTAR ESTES NOMES para corresponderem EXATAMENTE
-  // aos valores do campo 'institutions.type' da sua API (case-insensitive)
-  // Exemplo: Se a API retorna "Escola", use "Escola" aqui, não "Escolas".
-  const tabs = ['Superior', 'Escola', 'Tecnico', 'Idioma', 'Pos']; // Ajuste conforme sua API
+  const tabs = ['Superior', 'Escola', 'Tecnico', 'Idioma', 'Pos'];
 
   const handleTabChange = (newTab) => {
     setTab(newTab);
-    const newCursoValue = '';
-    const newInstituicaoValue = '';
-    // Ajuste a lógica da cidade se for diferente para a nova aba
-    const newCidadeValue = newTab.toLowerCase() === 'escola' ? '' : 'Recife, PE'; 
-
-    setCurso(newCursoValue);
-    setInstituicao(newInstituicaoValue);
-    setCidade(newCidadeValue);
-
+    const isEscolaTab = newTab.toLowerCase() === (tabs.find(t => t.toLowerCase().includes('escola')) || "escola").toLowerCase();
+    setCurso('');
+    setInstituicao('');
+    setCidade(isEscolaTab ? '' : 'Recife, PE');
     onBuscar({
       tab: newTab,
-      curso: newCursoValue,
-      instituicao: newInstituicaoValue,
-      cidade: newCidadeValue,
+      curso: '',
+      instituicao: '',
+      cidade: isEscolaTab ? '' : 'Recife, PE',
       bolsa: bolsa,
       modalidade: modalidade,
     });
   };
 
-  const handleBuscar = () => {
-    const filtros = {
-      tab,
-      curso,
-      instituicao,
-      cidade,
-      bolsa,
-      modalidade,
-    };
-    onBuscar(filtros);
+  const handleBuscarClick = () => {
+    onBuscar({ tab, curso, instituicao, cidade, bolsa, modalidade });
   };
 
-  // Ajuste 'escola' aqui se o nome da sua aba para escolas for diferente após o ajuste no array `tabs`
   const isEscola = tab.toLowerCase() === (tabs.find(t => t.toLowerCase().includes('escola')) || "escola").toLowerCase();
 
-
   return (
-    <section className="w-full min-h-screen bg-blue-600 flex items-center justify-center py-10 md:py-0"> {/* Adicionado py para mobile */}
-      <div className="w-full max-w-5xl bg-white rounded-lg shadow-lg p-6 pt-0">
-        {/* Tabs */}
-        <div className="flex border-b border-gray-200"> {/* Adicionada borda inferior para separar */}
-          {tabs.map((item) => (
-            <button
-              key={item}
-              onClick={() => handleTabChange(item)}
-              // CLASSE CORRIGIDA ABAIXO:
-              className={`flex-1 py-3 md:py-4 px-2 font-semibold text-sm md:text-base truncate 
-                ${tab === item 
-                  ? 'text-blue-600 border-b-2 border-blue-600' // Estilo da aba ativa
-                  : 'text-gray-500 hover:text-gray-700 hover:border-b-2 hover:border-gray-300' // Estilo da aba inativa
-                } 
-                transition-all duration-150 focus:outline-none -mb-px`} // -mb-px para alinhar borda com a borda do contêiner
-            >
-              {item}
-            </button>
-          ))}
+    <section className="w-full bg-blue-600 py-12 md:py-16"> {/* Fundo azul para a seção do filtro */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Texto Inspirador */}
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
+            Seu futuro <span className="text-yellow-400">começa aqui</span>.
+          </h1>
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-blue-100 max-w-2xl mx-auto">
+            Encontre bolsas de estudo incríveis e dê o próximo passo na sua jornada educacional com Edupass.
+          </p>
         </div>
 
-        {/* Formulário */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6 ">
-          <div>
-            <label htmlFor="filtro-curso" className="text-sm font-semibold text-gray-700 block mb-1">
-              {isEscola ? 'Qual a sua cidade?' : 'Qual curso você quer estudar?'}
-            </label>
-            <input
-              id="filtro-curso"
-              type="text"
-              value={curso}
-              onChange={(e) => setCurso(e.target.value)}
-              placeholder={isEscola ? 'Digite sua cidade' : 'Digite o curso'}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+        {/* Card do Filtro */}
+        <div className="bg-white rounded-xl shadow-2xl p-6 md:p-10">
+          {/* Abas */}
+          <div className="flex border-b border-slate-200 mb-6 md:mb-8">
+            {tabs.map((item) => (
+              <button
+                key={item}
+                onClick={() => handleTabChange(item)}
+                className={`flex-1 py-3 px-1 sm:px-2 font-semibold text-xs sm:text-sm md:text-base truncate focus:outline-none transition-colors duration-150 -mb-px
+                  ${tab === item 
+                    ? 'text-blue-600 border-b-2 border-blue-600' 
+                    : 'text-slate-500 hover:text-slate-700 hover:border-b-2 hover:border-slate-300'
+                  }`}
+              >
+                {item}
+              </button>
+            ))}
           </div>
 
-          <div>
-            <label htmlFor="filtro-instituicao" className="text-sm font-semibold text-gray-700 block mb-1">
-              {isEscola ? 'Qual o seu bairro?' : 'Qual a instituição?'}
-            </label>
-            <input
-              id="filtro-instituicao"
-              type="text"
-              value={instituicao}
-              onChange={(e) => setInstituicao(e.target.value)}
-              placeholder={isEscola ? 'Digite seu bairro' : 'Digite a instituição'}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="filtro-cidade-serie" className="text-sm font-semibold text-gray-700 block mb-1">
-              {isEscola ? 'Ano/Série' : 'Em que cidade quer estudar?'}
-            </label>
-            <div className="flex">
+          {/* Campos de Filtro Principais (Linha 1) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-5 mb-6 md:mb-8">
+            <div>
+              <label htmlFor="filtro-curso" className="form-label text-slate-700">
+                {isEscola ? 'Sua cidade' : 'Curso desejado'}
+              </label>
+              <input
+                id="filtro-curso" type="text" value={curso} onChange={(e) => setCurso(e.target.value)}
+                placeholder={isEscola ? 'Ex: Recife' : 'Ex: Engenharia de Software'}
+                className="form-input border-slate-300 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="filtro-instituicao" className="form-label text-slate-700">
+                {isEscola ? 'Seu bairro' : 'Instituição (opcional)'}
+              </label>
+              <input
+                id="filtro-instituicao" type="text" value={instituicao} onChange={(e) => setInstituicao(e.target.value)}
+                placeholder={isEscola ? 'Ex: Boa Viagem' : 'Deixe em branco para todas'}
+                className="form-input border-slate-300 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="filtro-cidade-serie" className="form-label text-slate-700">
+                {isEscola ? 'Ano/Série' : 'Cidade da instituição'}
+              </label>
               {isEscola ? (
-                <select
-                  id="filtro-cidade-serie"
-                  value={cidade} 
-                  onChange={(e) => setCidade(e.target.value)}
-                  className="flex-1 mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                <select id="filtro-cidade-serie" value={cidade} onChange={(e) => setCidade(e.target.value)}
+                  className="form-select border-slate-300 focus:border-blue-500 focus:ring-blue-500"
                 >
                   <option value="">Selecione o ano/série</option>
                   <option value="Maternal">Maternal</option>
                   <option value="Jardim I">Jardim I</option>
                   <option value="Jardim II">Jardim II</option>
-                  {[...Array(9)].map((_, i) => <option key={`EF${i+1}`} value={`${i+1}º Ano`}>{`${i+1}º Ano`}</option>)}
-                  {[...Array(3)].map((_, i) => <option key={`EM${i+1}`} value={`${i+1}ª Série`}>{`${i+1}ª Série`}</option>)}
+                  {[...Array(9)].map((_, i) => <option key={`EF${i+1}`} value={`${i+1}º Ano Fundamental`}>{`${i+1}º Ano Fundamental`}</option>)}
+                  {[...Array(3)].map((_, i) => <option key={`EM${i+1}`} value={`${i+1}ª Série Ensino Médio`}>{`${i+1}ª Série Ensino Médio`}</option>)}
                 </select>
               ) : (
                 <input
-                  id="filtro-cidade-serie"
-                  type="text"
-                  value={cidade}
-                  onChange={(e) => setCidade(e.target.value)}
-                  placeholder="Digite a cidade"
-                  className="flex-1 mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  id="filtro-cidade-serie" type="text" value={cidade} onChange={(e) => setCidade(e.target.value)}
+                  placeholder="Ex: Recife"
+                  className="form-input border-slate-300 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500"
                 />
               )}
-              <button
-                onClick={handleBuscar}
-                className="ml-2 md:ml-4 mt-1 bg-yellow-400 text-white font-bold px-4 py-2 rounded-md hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
-              >
-                Buscar
-              </button>
             </div>
           </div>
-        </div>
-
-        {/* Bolsa + Modalidade juntos */}
-        <div className="flex flex-col md:flex-row gap-4 md:items-center">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-semibold text-gray-700">Porcentagem da bolsa:</span>
-            {[30, 50, 80].map((percent) => (
+          
+          {/* Linha 2: Bolsa (Esquerda), Modalidades (Centro), Botão Buscar (Direita) */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-y-6 gap-x-6"> {/* Aumentado gap-x para md */}
+            {/* Seção da Bolsa */}
+            <div className="flex items-center gap-2 flex-wrap w-full md:w-auto">
+              <span className="text-sm font-medium text-slate-700 mr-1 sm:mr-2 whitespace-nowrap">Bolsa de até:</span>
+              {[30, 50, 80].map((percent) => (
               <button
-                key={percent}
-                onClick={() => setBolsa(percent)}
-                className={`px-3 py-1 rounded-md font-semibold text-sm transition-colors duration-150
+                  key={percent}
+                  onClick={() => setBolsa(percent)}
+                  className={`px-3 py-1.5 rounded-md font-medium text-xs sm:text-sm transition-colors duration-150
                   ${bolsa === percent 
-                    ? 'bg-green-500 text-white ring-2 ring-green-300' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-blue-600 text-white ring-2 ring-offset-1 ring-blue-500' 
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
               >
-                {percent}%
+                  {percent}%
               </button>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="flex items-center gap-2 flex-wrap mt-4 md:mt-0 md:ml-6">
-            <span className="font-semibold text-gray-700">Modalidade:</span>
-            {Object.entries(modalidade).map(([key, value]) => (
-              <label key={key} className="flex items-center gap-1 text-sm text-gray-600 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={value}
-                  onChange={() =>
-                    setModalidade((prev) => ({ ...prev, [key]: !prev[key] }))
-                  }
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 accent-blue-500"
-                />
-                <span className="capitalize">{key}</span>
+            {/* Seção das Modalidades (Centralizado) */}
+            <div className="flex items-center gap-x-3 sm:gap-x-4 gap-y-2 flex-wrap justify-center w-full md:flex-1 md:justify-center">
+              <span className="text-sm font-medium text-slate-700 mr-1 sm:mr-2 whitespace-nowrap">Modalidade:</span>
+              {Object.entries(modalidade).map(([key, value]) => (
+              <label key={key} className="flex items-center gap-1.5 text-sm text-slate-600 cursor-pointer">
+                  <input
+                  type="checkbox" checked={value} onChange={() => setModalidade((prev) => ({ ...prev, [key]: !prev[key] })) }
+                  className="form-checkbox h-4 w-4 text-blue-600 accent-blue-500"
+                  />
+                  <span className="capitalize">{key}</span>
               </label>
-            ))}
+              ))}
+            </div>
+
+            {/* Botão Buscar */}
+            <div className="w-full md:w-auto md:ml-auto"> {/* md:ml-auto para empurrar para a direita se houver espaço */}
+               <button
+                  onClick={handleBuscarClick}
+                  className="btn btn-primary w-full md:w-auto px-10 py-3 text-sm font-semibold"
+              >
+                  Buscar
+              </button>
+            </div>
           </div>
         </div>
       </div>
