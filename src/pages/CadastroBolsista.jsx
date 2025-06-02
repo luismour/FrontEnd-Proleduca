@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axiosInstance from '../api/axiosInstance';
+import LoadingSpinner from '../components/LoadingSpinner';
 // Supondo que você tenha a função validarCPF em um arquivo de utilitários
 // Se não, defina-a aqui ou importe do local correto.
 // Exemplo: import { validarCPF } from '../utils/validations';
@@ -164,7 +165,15 @@ export default function CadastroBolsista() {
       };
 
       console.log("Payload para criar inscrição:", inscricaoPayload);
-      await axiosInstance.post('/registrations/create', inscricaoPayload);
+      const inscricaoRes = await axiosInstance.post('/registrations/create', inscricaoPayload);
+      console.log("Resposta da API (criação inscrição):", inscricaoRes.data);
+
+      if (inscricaoRes.data && inscricaoRes.data.id) {
+        localStorage.setItem("lastKnownRegistrationId", inscricaoRes.data.id.toString());
+        console.log(`ID da inscrição ${inscricaoRes.data.id} salvo no localStorage.`);
+      } else {
+        console.warn("Não foi possível obter o ID da inscrição da resposta da API para salvar no localStorage.");
+      }
 
       alert('Inscrição realizada com sucesso!');
       resetForm();
@@ -186,79 +195,118 @@ export default function CadastroBolsista() {
     }
   };
 
-  return (
+ return (
     <>
-      <main className="min-h-[calc(100vh-384px)] bg-gray-100 dark:bg-gray-900 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
-        <div className="w-full max-w-3xl bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6 sm:p-8 md:p-10 my-8">
-          <div className="mb-6 text-center md:text-left">
-            <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-100">
-              Inscrição para: <span className="text-blue-600 dark:text-blue-400">{opportunity.name}</span>
-            </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Instituição: {inst?.name || 'N/A'}
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Local: {location}</p>
+      <div className="min-h-screen bg-gray-100 flex flex-col">
+        <main className="flex-grow flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+          <div className="w-full max-w-2xl bg-white rounded-xl shadow-xl p-8 space-y-8">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-gray-900">
+                Formulário de Inscrição
+              </h1>
+              <p className="mt-2 text-sm text-gray-600">
+                Você está se inscrevendo para: <span className="font-semibold text-blue-600">{opportunity.name}</span>
+              </p>
+              <p className="text-xs text-gray-500">
+                Instituição: {inst?.name || 'N/A'} | Local: {location}
+              </p>
+            </div>
+
+            <Formik 
+              initialValues={initialValues} 
+              validationSchema={validationSchema} 
+              onSubmit={handleSubmit}
+              enableReinitialize 
+            >
+              {({ isSubmitting, dirty, isValid, errors, touched }) => (
+                <Form className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                    <div>
+                      <label htmlFor="fullName" className="form-label">Nome Completo do Bolsista*</label>
+                      <Field 
+                        id="fullName" 
+                        type="text" 
+                        name="fullName" 
+                        placeholder="Nome completo do bolsista" 
+                        className={`form-input ${touched.fullName && errors.fullName ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} 
+                      />
+                      <ErrorMessage name="fullName" component="p" className="text-red-600 text-xs mt-1" />
+                    </div>
+                    <div>
+                      <label htmlFor="cpf" className="form-label">CPF do Bolsista*</label>
+                      <Field 
+                        id="cpf" 
+                        type="text" 
+                        name="cpf" 
+                        placeholder="000.000.000-00" 
+                        className={`form-input ${touched.cpf && errors.cpf ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} 
+                      />
+                      <ErrorMessage name="cpf" component="p" className="text-red-600 text-xs mt-1" />
+                    </div>
+                    <div>
+                      <label htmlFor="dateOfBirth" className="form-label">Data de Nascimento do Bolsista*</label>
+                      <Field 
+                        id="dateOfBirth" 
+                        type="date" 
+                        name="dateOfBirth" 
+                        className={`form-input ${touched.dateOfBirth && errors.dateOfBirth ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} 
+                      />
+                      <ErrorMessage name="dateOfBirth" component="p" className="text-red-600 text-xs mt-1" />
+                    </div>
+                    <div>
+                      <label htmlFor="needs" className="form-label">Necessidades Especiais*</label>
+                      <Field 
+                        id="needs" 
+                        type="text" 
+                        name="needs" 
+                        placeholder="Nenhuma, Visual, Auditiva..." 
+                        className={`form-input ${touched.needs && errors.needs ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`} 
+                      />
+                      <ErrorMessage name="needs" component="p" className="text-red-600 text-xs mt-1" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="raceColor" className="form-label">Raça/Cor do Bolsista*</label>
+                      <Field 
+                        id="raceColor" 
+                        as="select" 
+                        name="raceColor" 
+                        className={`form-select ${touched.raceColor && errors.raceColor ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                      >
+                        <option value="">Selecione...</option>
+                        <option value="Branca">Branca</option>
+                        <option value="Preta">Preta</option>
+                        <option value="Parda">Parda</option>
+                        <option value="Amarela">Amarela</option>
+                        <option value="Indígena">Indígena</option>
+                        <option value="Prefiro não dizer">Prefiro não dizer</option>
+                      </Field>
+                      <ErrorMessage name="raceColor" component="p" className="text-red-600 text-xs mt-1" />
+                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting || !dirty || !isValid}
+                      className="w-full btn btn-primary py-3 text-base flex items-center justify-center" 
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <LoadingSpinner size="h-5 w-5 mr-2" />
+                          Enviando Inscrição...
+                        </>
+                      ) : (
+                        'Confirmar Inscrição'
+                      )}
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
-
-          <Formik 
-            initialValues={initialValues} 
-            validationSchema={validationSchema} 
-            onSubmit={handleSubmit}
-            enableReinitialize 
-          >
-            {({ isSubmitting, dirty, isValid, errors, touched }) => (
-              <Form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                  <div>
-                    <label htmlFor="fullName" className="form-label">Nome Completo do Bolsista*</label>
-                    <Field id="fullName" type="text" name="fullName" placeholder="Nome completo do bolsista" className={`form-input ${touched.fullName && errors.fullName ? 'border-red-500 dark:border-red-400' : ''}`} />
-                    <ErrorMessage name="fullName" component="p" className="text-red-500 dark:text-red-400 text-xs mt-1" />
-                  </div>
-                  <div>
-                    <label htmlFor="cpf" className="form-label">CPF do Bolsista*</label>
-                    <Field id="cpf" type="text" name="cpf" placeholder="000.000.000-00" className={`form-input ${touched.cpf && errors.cpf ? 'border-red-500 dark:border-red-400' : ''}`} />
-                    <ErrorMessage name="cpf" component="p" className="text-red-500 dark:text-red-400 text-xs mt-1" />
-                  </div>
-                  <div>
-                    <label htmlFor="dateOfBirth" className="form-label">Data de Nascimento do Bolsista*</label>
-                    <Field id="dateOfBirth" type="date" name="dateOfBirth" className={`form-input ${touched.dateOfBirth && errors.dateOfBirth ? 'border-red-500 dark:border-red-400' : ''}`} />
-                    <ErrorMessage name="dateOfBirth" component="p" className="text-red-500 dark:text-red-400 text-xs mt-1" />
-                  </div>
-                  <div>
-                    <label htmlFor="needs" className="form-label">Necessidades Especiais*</label>
-                    <Field id="needs" type="text" name="needs" placeholder="Nenhuma, Visual, Auditiva..." className={`form-input ${touched.needs && errors.needs ? 'border-red-500 dark:border-red-400' : ''}`} />
-                    <ErrorMessage name="needs" component="p" className="text-red-500 dark:text-red-400 text-xs mt-1" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label htmlFor="raceColor" className="form-label">Raça/Cor do Bolsista*</label>
-                    <Field id="raceColor" as="select" name="raceColor" className={`form-select ${touched.raceColor && errors.raceColor ? 'border-red-500 dark:border-red-400' : ''}`}>
-                      <option value="">Selecione...</option>
-                      <option value="Branca">Branca</option>
-                      <option value="Preta">Preta</option>
-                      <option value="Parda">Parda</option>
-                      <option value="Amarela">Amarela</option>
-                      <option value="Indígena">Indígena</option>
-                      <option value="Prefiro não dizer">Prefiro não dizer</option>
-                    </Field>
-                    <ErrorMessage name="raceColor" component="p" className="text-red-500 dark:text-red-400 text-xs mt-1" />
-                  </div>
-                </div>
-
-                <div className="md:col-span-2 text-center pt-4">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || !dirty || !isValid}
-                    className="w-full sm:w-auto btn btn-primary px-8 py-3 text-base" 
-                  >
-                    {isSubmitting ? 'Enviando Inscrição...' : 'Confirmar Inscrição'}
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </div>
-      </main>
-      <Footer />
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }
