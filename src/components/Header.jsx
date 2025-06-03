@@ -198,7 +198,6 @@ export default function Header({ userLoggedIn, setUserLoggedIn }) {
               <div className="space-y-1">
                 <Link to="/perfil" onClick={closeMobileMenu} className="group flex items-center px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-md"><ProfileIcon /> Perfil</Link>
                 <Link to="/minhas-bolsas" onClick={closeMobileMenu} className="group flex items-center px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-md"><BriefcaseIcon /> Minhas Bolsas</Link>
-                <Link to="/dependentes" onClick={closeMobileMenu} className="group flex items-center px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-md"><UsersGroupIcon /> Dependentes</Link>
                 <button onClick={handleLogout} className="group flex items-center px-4 py-2.5 text-base font-medium text-red-600 hover:bg-red-50 hover:text-red-700 w-full rounded-md"><LogoutIcon /> Sair</button>
               </div>
             </div>
