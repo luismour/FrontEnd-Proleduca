@@ -1,124 +1,116 @@
 # 📘 Edupass Frontend - Plataforma de Oportunidades Educacionais
 
-O **Edupass Frontend** é a interface de usuário para a plataforma Edupass, um projeto que visa conectar estudantes a oportunidades educacionais, bolsas de estudo e cursos. Construído com tecnologias modernas, o frontend oferece uma experiência de usuário fluida e responsiva para alunos e administradores.
+[![Status do Projeto](https://img.shields.io/badge/status-ativo-brightgreen.svg)](https://github.com/luismour/FrontEnd-Proleduca)
+[![Construído com React](https://img.shields.io/badge/Built%20with-React%2019-61DAFB?logo=react)](https://react.dev/)
+[![Estilo com TailwindCSS](https://img.shields.io/badge/Styled%20with-TailwindCSS%204-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 
-Este projeto é parte da iniciativa **Prol Educa** (#AjudandoAEducar), focada em transformar vidas através da educação.
+O **Edupass Frontend** é a interface de usuário para a plataforma Edupass, um projeto inovador que visa **conectar estudantes a oportunidades educacionais transformadoras**, como bolsas de estudo e cursos de alta qualidade. Construído com tecnologias modernas e um foco na experiência do usuário, o frontend oferece uma navegação fluida e responsiva, tanto para alunos em busca de desenvolvimento quanto para administradores que gerenciam o ecossistema educacional.
 
-## ✨ Principais Funcionalidades
+Este projeto é parte integrante da iniciativa **Prol Educa** (`#AjudandoAEducar`), que tem a missão de impactar positivamente vidas através da educação.
 
-* **Para Alunos:**
-    * Visualização e filtragem de oportunidades de bolsas de estudo.
-    * Cadastro e Login de usuários.
-    * Inscrição em bolsas e cursos.
-    * Gerenciamento de bolsas adquiridas ("Minhas Bolsas").
-    * Lista de cursos favoritos.
-* **Painel Administrativo:**
-    * Dashboard com visão geral do sistema.
-    * CRUD (Criar, Ler, Editar, Excluir) para Instituições.
-    * CRUD para Cursos, com associação a instituições.
-    * CRUD para Usuários (Clientes).
-    * CRUD para Bolsistas, com associação a clientes.
-    * Gerenciamento de Inscrições (visualização de detalhes e atualização de status).
-    * Modo escuro para melhor usabilidade.
+## ✨ Visão Geral & Destaques
 
-## 🚀 Tecnologias Utilizadas
+O Edupass é mais do que uma plataforma de bolsas; é um ecossistema que empodera:
+* **Colaboradores:** Oferecendo acesso simplificado a oportunidades de desenvolvimento de carreira e pessoal.
+* **Empresas:** Facilitando a gestão e o oferecimento de bolsas corporativas, promovendo o desenvolvimento e a retenção de talentos.
+* **Instituições de Ensino:** Conectando-as a um público qualificado e engajado, otimizando seus processos de matrícula.
 
-Este projeto foi construído utilizando as seguintes tecnologias e bibliotecas:
+## 🚀 Principais Funcionalidades
 
-* **Frontend:**
-    * [React 19](https://react.dev/) - Biblioteca JavaScript para construir interfaces de usuário.
-    * [Vite](https://vitejs.dev/) - Ferramenta de build moderna e rápida para desenvolvimento frontend.
-    * [Tailwind CSS v4](https://tailwindcss.com/) - Framework CSS utility-first para estilização rápida e responsiva.
-    * [React Router DOM v7](https://reactrouter.com/) - Para roteamento declarativo.
-    * [Formik](https://formik.org/) - Para gerenciamento de formulários.
-    * [Yup](https://github.com/jquense/yup) - Para validação de esquemas de formulário.
-    * [Axios](https://axios-http.com/) - Cliente HTTP baseado em Promises para requisições API.
-    * React Context API - Para gerenciamento de estado global (ex: tema, oportunidades).
-    * [React Icons](https://react-icons.github.io/react-icons/) - Para ícones SVG.
-* **Ferramentas de Desenvolvimento:**
-    * [ESLint](https://eslint.org/) - Para linting de código JavaScript/JSX.
-    * [PostCSS](https://postcss.org/) - Ferramenta para transformar CSS com JavaScript (usada pelo Tailwind).
-    * [Autoprefixer](https://github.com/postcss/autoprefixer) - Plugin PostCSS para adicionar prefixos de fornecedores.
+O Edupass oferece um conjunto robusto de funcionalidades, tanto para o usuário final quanto para a administração da plataforma:
 
-## 📋 Pré-requisitos
+### **Para Alunos (Área do Usuário):**
+* **Exploração de Oportunidades:** Visualização e filtragem avançada de milhares de bolsas de estudo e cursos.
+    * Filtros por tipo de instituição (Superior, Escola, Técnico, Idiomas, Pós).
+    * Filtros por curso desejado, instituição, cidade/estado.
+    * Filtro de bolsas por porcentagem de desconto (até X%).
+* **Autenticação Segura:** Cadastro e Login de usuários.
+* **Inscrição Simplificada:** Fluxo de inscrição em bolsas e cursos, incluindo o cadastro de dados do bolsista.
+* **Gestão de Bolsas:** Acompanhamento detalhado do status de suas inscrições ('Minhas Bolsas').
+* **Gestão de Dependentes:** Cadastro e visualização dos cursos associados aos dependentes cadastrados.
+* **Perfil do Usuário:** Visualização e edição das informações pessoais do perfil.
+
+### **Painel Administrativo (`/admin`):**
+* **Dashboard Abrangente:** Visão geral com estatísticas chave sobre instituições, cursos, usuários, bolsistas e inscrições, incluindo gráficos de distribuição de status e novas inscrições por mês.
+* **Gestão de Entidades (CRUD):**
+    * **Instituições:** Completo CRUD para escolas e universidades.
+    * **Cursos:** Completo CRUD para cursos, com associação a instituições.
+    * **Usuários (Clientes):** Gerenciamento de usuários, incluindo busca por nome, email ou CPF.
+    * **Bolsistas:** Gestão de beneficiários de bolsas, com associação a clientes e validação de CPF.
+* **Gerenciamento de Inscrições:** Visualização de detalhes e atualização do status das inscrições (Pendente, Confirmado, Cancelado, Inativo, Técnico).
+* **Rotas Protegidas:** Acesso ao painel administrativo restrito a usuários com a `ROLE_ADMIN`.
+
+
+## 💻 Tecnologias Utilizadas
+
+Este projeto foi construído utilizando as seguintes tecnologias e bibliotecas, garantindo uma base sólida e moderna:
+
+* **Frontend Core:**
+    * [**React 19**](https://react.dev/): Biblioteca JavaScript para construir interfaces de usuário eficientes e reativas.
+    * [**Vite**](https://vitejs.dev/): Ferramenta de build de nova geração, proporcionando um ambiente de desenvolvimento rápido e otimizado para produção.
+* **Estilização:**
+    * [**Tailwind CSS v4**](https://tailwindcss.com/): Framework CSS utility-first para estilização rápida e responsiva, focando em um design limpo e modular.
+* **Roteamento:**
+    * [**React Router DOM v7**](https://reactrouter.com/): Para roteamento declarativo e navegação na aplicação.
+* **Gerenciamento de Formulários & Validação:**
+    * [**Formik**](https://formik.org/): Solução robusta para gerenciar o estado de formulários, validação e submissão.
+    * [**Yup**](https://github.com/jquense/yup): Biblioteca de validação de esquemas de objetos, integrada ao Formik para validações eficientes.
+* **Requisições API:**
+    * [**Axios**](https://axios-http.com/): Cliente HTTP baseado em Promises, configurado com uma instância global (`axiosInstance`) para requisições autenticadas à API do backend.
+* **Estado Global:**
+    * **React Context API:** Para gerenciamento de estado global de funcionalidades como favoritos e oportunidades.
+* **Visualização de Dados:**
+    * [**Chart.js**](https://www.chartjs.org/) & [**React Chart.js 2**](https://react-chartjs-2.js.org/): Para criar gráficos interativos no Dashboard administrativo.
+* **Ícones:**
+    * [**React Icons**](https://react-icons.github.io/react-icons/): Coleção de ícones SVG para uso em componentes.
+
+## ⚙️ Pré-requisitos e Instalação
 
 Antes de começar, certifique-se de ter o [Node.js](https://nodejs.org/) (versão 18.x ou superior recomendada) e o [npm](https://www.npmjs.com/) (ou [Yarn](https://yarnpkg.com/)) instalados na sua máquina.
 
-## ⚙️ Instalação e Configuração
+### **Passos para Configuração:**
 
-Siga os passos abaixo para configurar o ambiente de desenvolvimento:
-
-1.  **Clone o repositório:**
+1.  **Clone o Repositório:**
     ```bash
     git clone [https://github.com/luismour/FrontEnd-Proleduca.git](https://github.com/luismour/FrontEnd-Proleduca.git)
     cd FrontEnd-Proleduca
     ```
 
-2.  **Instale as dependências:**
+2.  **Instale as Dependências:**
     ```bash
     npm install
-    ```
-    ou
-    ```bash
+    # ou
     yarn install
     ```
 
-3.  **Configuração do Backend:**
-    Este frontend se conecta a um backend para buscar e enviar dados. Certifique-se de que o backend do Edupass está rodando e acessível. A URL base da API está configurada em `src/api/axiosInstance.js`. Por padrão, ela aponta para `https://proleduca-edupass-latest.onrender.com`. Se você tiver uma instância local do backend, pode ser necessário ajustar esta URL.
-
-    _Se houver variáveis de ambiente necessárias (ex: `.env` para a URL da API), adicione instruções aqui._
+3.  **Configuração do Backend (API):**
+    Este frontend se conecta a um backend para buscar e enviar dados. Certifique-se de que a API do Edupass está rodando e acessível.
+    * A URL base da API está configurada em `src/api/axiosInstance.js`. Por padrão, ela aponta para `https://proleduca-edupass-latest.onrender.com`.
+    * Se você estiver utilizando uma instância local do backend ou uma URL diferente, **crie um arquivo `.env`** na raiz do projeto com a seguinte variável:
+        ```env
+        VITE_API_BASE_URL=http://localhost:8080 # Ou a URL da sua API
+        ```
+        E certifique-se de que `axiosInstance.js` esteja configurado para usar esta variável (ex: `baseURL: import.meta.env.VITE_API_BASE_URL || "https://proleduca-edupass-latest.onrender.com"`).
 
 ## 💻 Scripts Disponíveis
 
 No diretório do projeto, você pode executar os seguintes scripts:
 
 * **`npm run dev`**
-    Inicia o servidor de desenvolvimento Vite. Abra [http://localhost:5173](http://localhost:5173) (ou a porta indicada no seu terminal) para visualizar no navegador. A página será recarregada automaticamente se você fizer edições.
+    Inicia o servidor de desenvolvimento Vite. Abra `http://localhost:5173` (ou a porta indicada no seu terminal) para visualizar a aplicação no navegador. A página será recarregada automaticamente a cada edição.
 
 * **`npm run build`**
-    Compila a aplicação para produção na pasta `dist/`. Ele agrupa o React corretamente no modo de produção e otimiza o build para a melhor performance.
+    Compila a aplicação para produção na pasta `dist/`. Este script otimiza o código para a melhor performance e prepara os arquivos para deploy.
 
 * **`npm run lint`**
-    Executa o ESLint para analisar o código em busca de problemas e aplicar correções (se configurado).
+    Executa o ESLint para analisar o código JavaScript/JSX em busca de problemas, conforme as regras definidas em `eslint.config.js`.
 
 * **`npm run preview`**
     Inicia um servidor local estático para pré-visualizar o build de produção da pasta `dist/`.
 
-## 📂 Estrutura de Pastas Recomendada
+## 🔒 Autenticação e Autorização
 
-A estrutura de pastas do projeto visa manter a organização e modularidade:
-
-src/
-├── api/          # Configuração do Axios e chamadas de API.
-├── assets/       # Imagens, fontes e outros recursos estáticos.
-├── components/   # Componentes React reutilizáveis (globais ou específicos de UI).
-│   └── admin/    # Componentes específicos do painel de administração.
-├── contexts/     # Context API do React para gerenciamento de estado global.
-├── data/         # Dados mockados ou estáticos (se houver).
-├── hooks/        # Hooks React personalizados.
-├── pages/        # Componentes de página (renderizados pelas rotas).
-│   └── admin/    # Páginas específicas do painel de administração.
-├── utils/        # Funções utilitárias (ex: validações, formatação).
-├── App.jsx       # Componente raiz da aplicação.
-├── main.jsx      # Ponto de entrada do React e configuração do Router.
-└── index.css     # Estilos globais e importação do Tailwind CSS.
-
-
-## 🤝 Como Contribuir
-
-Contribuições são o que tornam a comunidade de código aberto um lugar incrível para aprender, inspirar e criar. Qualquer contribuição que você fizer será **muito apreciada**.
-
-Se você tem uma sugestão para melhorar este projeto, por favor, faça um fork do repositório e crie uma pull request. Você também pode simplesmente abrir uma issue com a tag "enhancement".
-Não se esqueça de dar uma estrela ao projeto! Obrigado novamente!
-
-1.  Faça um Fork do projeto
-2.  Crie sua Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4.  Faça Push para a Branch (`git push origin feature/AmazingFeature`)
-5.  Abra uma Pull Request
-
-## 📜 Licença
-
-Este projeto está sob a Licença MIT. Veja o arquivo `LICENSE` (você precisará criar um se não existir) para mais detalhes.
-
----
+O Edupass utiliza um sistema de autenticação baseado em tokens JWT (JSON Web Tokens).
+* Após o login, o `accessToken` e as `roles` do usuário (`ROLE_USER`, `ROLE_ADMIN`) são armazenados no `localStorage`.
+* As requisições para a API utilizam um interceptor no `axiosInstance` para anexar o token de autorização automaticamente.
+* O Painel Administrativo (`/admin`) é protegido por uma `PrivateRoute`, que verifica a presença do token e se o usuário possui a `ROLE_ADMIN` antes de permitir o acesso.
