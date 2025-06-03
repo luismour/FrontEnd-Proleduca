@@ -16,6 +16,7 @@ export default function OpportunitiesList() {
     tab: 'Superior',
     cidade: ''
   });
+  const [availableLocations, setAvailableLocations] = useState([]); // Novo estado para localidades
 
   useEffect(() => {
     const fetchCursos = async () => {
@@ -51,7 +52,16 @@ export default function OpportunitiesList() {
             institutionType: instituicao.type || '',
           };
         });
-        
+
+        // Coletar cidades e estados únicos
+        const uniqueLocations = new Set();
+        oportunidadesFormatadas.forEach(op => {
+          if (op.city) uniqueLocations.add(op.city);
+          if (op.state) uniqueLocations.add(op.state); // Adiciona a sigla do estado
+        });
+        const sortedLocations = Array.from(uniqueLocations).sort((a, b) => a.localeCompare(b));
+        setAvailableLocations(sortedLocations);
+
         setAllOpportunities(oportunidadesFormatadas);
         const resultadoInicial = filtrarOportunidades(oportunidadesFormatadas, currentFilters);
         setDisplayedOpportunities(resultadoInicial);
@@ -74,9 +84,9 @@ export default function OpportunitiesList() {
     setIsLoading(true);
     const resultado = filtrarOportunidades(allOpportunities, filtros);
     setDisplayedOpportunities(resultado);
-    setTimeout(() => setIsLoading(false), 300); 
+    setTimeout(() => setIsLoading(false), 300);
   };
-  
+
   const getPageTitle = () => {
     if (currentFilters.tab?.toLowerCase() === 'escola') {
         let title = "Escolas ";
@@ -94,17 +104,18 @@ export default function OpportunitiesList() {
 
   return (
     <div className="w-full">
-      <FiltroCursos onBuscar={handleBuscar} />
-      
-      <div className="bg-white py-10 md:py-16"> {/* Fundo branco */}
+      {/* Passa availableLocations para o FiltroCursos */}
+      <FiltroCursos onBuscar={handleBuscar} availableLocations={availableLocations} />
+
+      <div className="bg-white py-10 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8 md:mb-12 text-center md:text-left">
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
               {getPageTitle()}
             </h1>
             <p className="text-sm sm:text-md text-slate-600 mt-1">
-              {isLoading ? "Atualizando resultados..." : 
-               displayedOpportunities.length > 0 
+              {isLoading ? "Atualizando resultados..." :
+               displayedOpportunities.length > 0
                 ? `Encontramos ${displayedOpportunities.length} vaga(s) com bolsa para você!`
                 : "Nenhuma vaga encontrada com os filtros atuais."}
             </p>

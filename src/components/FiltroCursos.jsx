@@ -4,26 +4,27 @@ import React, { useState } from 'react';
 export default function FiltroCursos({ onBuscar }) {
   const [curso, setCurso] = useState('');
   const [instituicao, setInstituicao] = useState('');
-  const [cidade, setCidade] = useState('Recife, PE');
+  const [cidade, setCidade] = useState('Recife');
   const [bolsa, setBolsa] = useState(50);
   const [modalidade, setModalidade] = useState({
     presencial: true,
     ead: true,
   });
   const [tab, setTab] = useState('Superior');
-  const tabs = ['Superior', 'Escola', 'Tecnico', 'Idioma', 'Pós'];
+  // Alterado 'Tecnico' para 'Técnico' (com acento) para consistência
+  const tabs = ['Superior', 'Escola', 'Técnico', 'Idiomas', 'Pós'];
 
   const handleTabChange = (newTab) => {
     setTab(newTab);
     const isEscolaTab = newTab.toLowerCase() === (tabs.find(t => t.toLowerCase().includes('escola')) || "escola").toLowerCase();
     setCurso('');
     setInstituicao('');
-    setCidade(isEscolaTab ? '' : 'Recife, PE');
+    setCidade(isEscolaTab ? '' : 'Recife');
     onBuscar({
       tab: newTab,
       curso: '',
       instituicao: '',
-      cidade: isEscolaTab ? '' : 'Recife, PE',
+      cidade: isEscolaTab ? '' : 'Recife',
       bolsa: bolsa,
       modalidade: modalidade,
     });
@@ -57,8 +58,8 @@ export default function FiltroCursos({ onBuscar }) {
                 key={item}
                 onClick={() => handleTabChange(item)}
                 className={`flex-1 py-3 px-1 sm:px-2 font-semibold text-xs sm:text-sm md:text-base truncate focus:outline-none transition-colors duration-150 -mb-px
-                  ${tab === item 
-                    ? 'text-blue-600 border-b-2 border-blue-600' 
+                  ${tab === item
+                    ? 'text-blue-600 border-b-2 border-blue-600'
                     : 'text-slate-500 hover:text-slate-700 hover:border-b-2 hover:border-slate-300'
                   }`}
               >
@@ -113,7 +114,7 @@ export default function FiltroCursos({ onBuscar }) {
               )}
             </div>
           </div>
-          
+
           {/* Linha 2: Bolsa (Esquerda), Modalidades (Centro), Botão Buscar (Direita) */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-y-6 gap-x-6"> {/* Aumentado gap-x para md */}
             {/* Seção da Bolsa */}
@@ -124,8 +125,8 @@ export default function FiltroCursos({ onBuscar }) {
                   key={percent}
                   onClick={() => setBolsa(percent)}
                   className={`px-3 py-1.5 rounded-md font-medium text-xs sm:text-sm transition-colors duration-150
-                  ${bolsa === percent 
-                      ? 'bg-blue-600 text-white ring-2 ring-offset-1 ring-blue-500' 
+                  ${bolsa === percent
+                      ? 'bg-blue-600 text-white ring-2 ring-offset-1 ring-blue-500'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
               >

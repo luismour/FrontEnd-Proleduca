@@ -19,13 +19,14 @@ export function filtrarOportunidades(oportunidades, filtros) {
 
     // --- Filtro de Modalidade: IGNORADO POR ENQUANTO ---
     // Se for reativar, certifique-se que item.modality exista e corresponda aos checkboxes
-    const modalidadeMatch = true; 
+    const modalidadeMatch = true;
 
     // --- Filtro de Bolsa ---
     let bolsaPercentMatch = true;
     if (typeof normalizedFiltros.bolsa === 'number' && item.percent) { // item.percent é string como "50%"
       const bolsaValorItem = parseInt(String(item.percent).replace(/[^\d]/g, ''));
-      bolsaPercentMatch = !isNaN(bolsaValorItem) ? bolsaValorItem >= normalizedFiltros.bolsa : false;
+      // Filtrar cursos com porcentagem ATÉ a porcentagem do filtro
+      bolsaPercentMatch = !isNaN(bolsaValorItem) ? bolsaValorItem <= normalizedFiltros.bolsa : false;
     }
 
     // --- Filtro de Aba (Tipo/Nível da Instituição) ---
@@ -46,19 +47,13 @@ export function filtrarOportunidades(oportunidades, filtros) {
       if (normalizedFiltros.curso) { // Aplicar filtro apenas se houver valor
         inputCursoMatch = item.city && item.city.toLowerCase().includes(normalizedFiltros.curso);
       }
-      
+
       // filtros.instituicao (normalizado) é o "Bairro" digitado pelo usuário
       if (normalizedFiltros.instituicao) { // Aplicar filtro apenas se houver valor
         inputInstituicaoMatch = item.neighborhood && item.neighborhood.toLowerCase().includes(normalizedFiltros.instituicao);
       }
-      
+
       // filtros.cidade (normalizado) é "Ano/Série" para a aba Escola
-      // Esta lógica precisa ser implementada se você quiser filtrar por Ano/Série.
-      // Por enquanto, está como true. Se item tiver um campo 'anoSerie':
-      // if (normalizedFiltros.cidade) { // 'cidade' aqui é o ano/série
-      //   inputLocalizacaoMatch = item.anoSerie && item.anoSerie.toLowerCase().includes(normalizedFiltros.cidade);
-      // }
-      // Por enquanto, mantendo como estava:
       inputLocalizacaoMatch = true; // Ignorando filtro de Ano/Série para escolas por enquanto
 
     } else {
@@ -72,11 +67,13 @@ export function filtrarOportunidades(oportunidades, filtros) {
       if (normalizedFiltros.instituicao) {
         inputInstituicaoMatch = item.institution && item.institution.toLowerCase().includes(normalizedFiltros.instituicao);
       }
-      
-      // filtros.cidade (normalizado) é a "Cidade onde quer estudar"
-      // CORREÇÃO: Comparar com item.city em vez de item.location
+
+      // filters.cidade (normalized) is the "City where you want to study"
+      // CORREÇÃO: Comparar com item.city OU item.state
       if (normalizedFiltros.cidade) {
-        inputLocalizacaoMatch = item.city && item.city.toLowerCase().includes(normalizedFiltros.cidade);
+        const cityMatch = item.city && item.city.toLowerCase().includes(normalizedFiltros.cidade);
+        const stateMatch = item.state && item.state.toLowerCase() === normalizedFiltros.cidade; // Exact match for state abbreviation
+        inputLocalizacaoMatch = cityMatch || stateMatch;
       }
     }
 
