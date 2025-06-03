@@ -1,9 +1,9 @@
 // src/pages/admin/Inscriptions.jsx
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Adicionado useNavigate
+import { Link, useNavigate } from "react-router-dom"; 
 import axiosInstance from "../../api/axiosInstance";
 
-// --- Ícones ---
+// --- Ícones (mantidos como no seu arquivo original) ---
 const CheckCircleIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-green-600">
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16Zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
@@ -36,7 +36,7 @@ const EyeIcon = () => (
       <path fillRule="evenodd" d="M.664 10.59a1.651 1.651 0 0 1 0-1.18l.82-1.425a1.651 1.651 0 0 1 1.518-.888h1.908a1.651 1.651 0 0 1 1.518.888l.82 1.425a1.651 1.651 0 0 1 0 1.18l-.82 1.425a1.651 1.651 0 0 1-1.518.888H2.998a1.651 1.651 0 0 1-1.518-.888l-.819-1.425ZM6.25 10a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0Z" clipRule="evenodd" />
     </svg>
 );
-
+// --- Fim dos Ícones ---
 
 const StatusBar = ({ status }) => {
     let progressColor = 'bg-gray-400'; 
@@ -48,7 +48,7 @@ const StatusBar = ({ status }) => {
 
     if (status) {
         const lowerStatus = status.toLowerCase();
-        if (lowerStatus === 'confirmado' || lowerStatus === 'ativo') {
+        if (lowerStatus === 'confirmado' || lowerStatus === 'ativo') { 
             progressColor = 'bg-green-500';
             textColor = 'text-green-700';
             widthPercent = '100%';
@@ -66,6 +66,12 @@ const StatusBar = ({ status }) => {
             widthPercent = '100%'; 
             IconComponent = XCircleIcon;
             statusLabel = "Cancelado";
+        } else if (lowerStatus === 'inativo') { 
+            progressColor = 'bg-orange-400'; 
+            textColor = 'text-orange-700';
+            widthPercent = '25%'; 
+            IconComponent = ArchiveBoxIcon; 
+            statusLabel = "Inativo";
         }
     }
     
@@ -91,7 +97,7 @@ export default function Inscriptions() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const possibleStatuses = ["Pendente", "Confirmado", "Cancelado"]; 
+  const possibleStatuses = ["Pendente", "Confirmado", "Cancelado", "Inativo"]; 
 
   useEffect(() => {
     fetchInscriptions();
@@ -114,35 +120,76 @@ export default function Inscriptions() {
 
   const handleStatusChange = async (inscriptionId, newStatus) => {
     const originalInscriptions = [...inscriptions];
+    
+    const inscriptionToUpdate = originalInscriptions.find(insc => insc.id === inscriptionId);
+
+    if (!inscriptionToUpdate) {
+      console.error("Admin/Inscriptions: Inscrição não encontrada no estado para atualização. ID:", inscriptionId);
+      alert("Não foi possível encontrar os dados da inscrição para atualizar.");
+      return;
+    }
+
+    console.log("Admin/Inscriptions: Dados da inscrição original:", JSON.stringify(inscriptionToUpdate, null, 2));
+
     setInscriptions(prevInscriptions =>
       prevInscriptions.map(insc =>
         insc.id === inscriptionId ? { ...insc, status: newStatus, _isUpdating: true } : insc
       )
     );
+
     try {
-      await axiosInstance.put(`/registrations/${inscriptionId}`, { status: newStatus }); 
+      // Construindo o payload conforme o JSON CORRETO especificado
+      const payload = {
+        status: newStatus,
+        // Usar os nomes de chave corretos e apenas os IDs
+        scholarshipHolderId: inscriptionToUpdate.scholarshipHolders?.id,
+        courseId: inscriptionToUpdate.courses?.id,
+        registrationDate: inscriptionToUpdate.registrationDate 
+      };
+      
+      // Validação para garantir que os IDs não são nulos ou undefined ANTES de enviar, se forem obrigatórios
+      if (payload.scholarshipHolderId === undefined || payload.scholarshipHolderId === null) {
+        throw new Error(`ID do Bolsista (scholarshipHolderId) é nulo ou indefinido para a inscrição ${inscriptionId}.`);
+      }
+      if (payload.courseId === undefined || payload.courseId === null) {
+        throw new Error(`ID do Curso (courseId) é nulo ou indefinido para a inscrição ${inscriptionId}.`);
+      }
+      if (!payload.registrationDate) { // Se a data for obrigatória e estiver faltando
+        throw new Error(`Data de Registro (registrationDate) está faltando para a inscrição ${inscriptionId}.`);
+      }
+
+
+      console.log("Admin/Inscriptions: Atualizando inscrição ID:", inscriptionId, "Payload para PUT:", payload);
+      await axiosInstance.put(`/registrations/${inscriptionId}`, payload); 
+      
+      // Atualiza o estado local após o sucesso
       setInscriptions(prevInscriptions =>
         prevInscriptions.map(insc =>
-          insc.id === inscriptionId ? { ...insc, _isUpdating: false } : insc
+          insc.id === inscriptionId ? 
+          { 
+            ...inscriptionToUpdate, // Pega todos os campos da inscrição original
+            status: newStatus,      // Atualiza o status
+            _isUpdating: false 
+          } : insc
         )
       );
     } catch (err) {
-      console.error("Erro ao atualizar status:", err.response?.data || err.message);
-      const apiError = err.response?.data?.message || "Falha ao atualizar status da inscrição.";
-      setError(apiError);
+      console.error("Admin/Inscriptions: Erro ao atualizar status:", err.response?.data || err.message);
+      const apiError = err.response?.data?.message || err.message || "Falha ao atualizar status da inscrição.";
+      setError(apiError); 
       alert(apiError);
-      setInscriptions(originalInscriptions);
+      setInscriptions(originalInscriptions); // Reverte para o estado original em caso de erro
     }
   };
 
   const handleDeleteInscription = async (inscriptionId) => {
     if (window.confirm("Tem certeza que deseja excluir esta inscrição? Esta ação não pode ser desfeita.")) {
-        setIsLoading(true); // Pode-se usar um loading mais granular se preferir
+        setIsLoading(true); 
         setError(null);
         try {
-            await axiosInstance.delete(`/registrations/${inscriptionId}`); // Confirme este endpoint
+            await axiosInstance.delete(`/registrations/${inscriptionId}`);
             alert("Inscrição excluída com sucesso!");
-            fetchInscriptions(); // Re-fetch para atualizar a lista
+            fetchInscriptions(); 
         } catch (err) {
             console.error("Erro ao excluir inscrição:", err.response?.data || err.message);
             const apiError = err.response?.data?.message || "Falha ao excluir inscrição.";
@@ -156,9 +203,15 @@ export default function Inscriptions() {
   
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
-    const parts = dateString.split('-');
-    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    return new Date(dateString).toLocaleDateString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) { 
+      const parts = dateString.split('-');
+      if (parts.length === 3 && parts[0].length === 4) {
+          return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return dateString; 
+    }
+    return date.toLocaleDateString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit' });
   };
 
   return (
@@ -195,41 +248,42 @@ export default function Inscriptions() {
                   <th className="th-admin hidden sm:table-cell">CPF Bolsista</th>
                   <th className="th-admin hidden md:table-cell">Curso</th>
                   <th className="th-admin hidden lg:table-cell">Instituição</th>
-                  <th className="th-admin hidden xl:table-cell">Data</th>
-                  <th className="th-admin px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Status</th>
+                  <th className="th-admin hidden xl:table-cell">Data Cadastro</th>
+                  <th className="th-admin px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Status Atual</th>
                   <th className="th-admin text-center">Alterar Status</th>
                   <th className="th-admin text-right pr-6">Ações</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {inscriptions.map(insc => (
-                  <tr key={insc.id} className={`hover:bg-gray-50 transition-colors duration-150 ${insc._isUpdating ? 'opacity-50' : ''}`}>
+                  <tr key={insc.id} className={`hover:bg-gray-50 transition-colors duration-150 ${insc._isUpdating ? 'opacity-50 pointer-events-none' : ''}`}>
                     <td className="td-admin font-mono text-xs">
                         <Link to={`/admin/inscriptions/${insc.id}`} className="text-blue-600 hover:text-blue-800 hover:underline">
                             {insc.id}
                         </Link>
                     </td>
                     <td className="td-admin font-medium text-gray-900 truncate max-w-xs">
-                        <Link to={`/admin/inscriptions/${insc.id}`} className="hover:underline">
+                        <Link to={`/admin/inscriptions/${insc.id}`} className="hover:underline" title={insc.scholarshipHolders?.fullName}>
                             {insc.scholarshipHolders?.fullName || "N/A"}
                         </Link>
                     </td>
                     <td className="td-admin hidden sm:table-cell">{insc.scholarshipHolders?.cpf || "N/A"}</td>
-                    <td className="td-admin hidden md:table-cell truncate max-w-xs">{insc.courses?.name || "N/A"}</td>
-                    <td className="td-admin hidden lg:table-cell truncate max-w-xs">{insc.courses?.institutions?.name || "N/A"}</td>
+                    <td className="td-admin hidden md:table-cell truncate max-w-xs" title={insc.courses?.name}>{insc.courses?.name || "N/A"}</td>
+                    <td className="td-admin hidden lg:table-cell truncate max-w-xs" title={insc.courses?.institutions?.name}>{insc.courses?.institutions?.name || "N/A"}</td>
                     <td className="td-admin hidden xl:table-cell">{formatDate(insc.registrationDate)}</td>
                     <td className="td-admin px-6 py-4 whitespace-nowrap">
                         <StatusBar status={insc.status} />
                     </td>
                     <td className="td-admin text-center px-6 py-4 whitespace-nowrap">
                       <select
-                        value={insc.status}
+                        value={insc.status || ''} 
                         onChange={(e) => handleStatusChange(insc.id, e.target.value)}
                         className="form-select text-sm py-1 px-2 w-full max-w-[160px] mx-auto"
                         disabled={insc._isUpdating}
                       >
+                        <option value="" disabled>Selecione...</option>
                         {possibleStatuses.map(statusOpt => (
-                          <option key={statusOpt} value={statusOpt.toLowerCase() === 'ativo' ? 'Confirmado' : statusOpt}>{statusOpt}</option>
+                          <option key={statusOpt} value={statusOpt}>{statusOpt}</option>
                         ))}
                       </select>
                     </td>

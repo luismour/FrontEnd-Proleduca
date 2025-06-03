@@ -156,7 +156,7 @@ export default function CadastroBolsista() {
         scholarshipHolderId: bolsistaId,         
         courseId: parseInt(opportunityId),     
         registrationDate: new Date().toISOString().split('T')[0], 
-        status: 'Ativo',
+        status: 'Pendente',
       };
 
       console.log("Payload para criar inscrição:", inscricaoPayload);

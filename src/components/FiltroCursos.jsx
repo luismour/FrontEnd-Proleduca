@@ -11,7 +11,7 @@ export default function FiltroCursos({ onBuscar }) {
     ead: true,
   });
   const [tab, setTab] = useState('Superior');
-  const tabs = ['Superior', 'Escola', 'Tecnico', 'Idioma', 'Pos'];
+  const tabs = ['Superior', 'Escola', 'Tecnico', 'Idioma', 'Pós'];
 
   const handleTabChange = (newTab) => {
     setTab(newTab);

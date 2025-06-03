@@ -1,49 +1,83 @@
+// src/utils/filtrarOportunidades.js
 export function filtrarOportunidades(oportunidades, filtros) {
   if (!oportunidades || !Array.isArray(oportunidades)) return [];
   if (!filtros) return oportunidades; // Se não há filtros, retorna tudo
 
+  // Limpa e normaliza os valores de texto dos filtros uma vez
+  const normalizedFiltros = {
+    ...filtros,
+    tab: filtros.tab?.toLowerCase(),
+    curso: filtros.curso?.toLowerCase().trim(),
+    instituicao: filtros.instituicao?.toLowerCase().trim(),
+    cidade: filtros.cidade?.toLowerCase().trim(),
+    // bolsa já é número, modalidade é objeto
+  };
+
   return oportunidades.filter((item) => {
-    const tabSelecionadaLower = filtros.tab?.toLowerCase();
-    // Certifique-se que 'escola' corresponde ao valor da sua aba para escolas em FiltroCursos.jsx (em minúsculas)
-    // e também ao valor de item.institutionType (vindo de institutions.type da API, em minúsculas).
-    const isEscolaTab = tabSelecionadaLower === 'escola'; 
+    const tabSelecionadaLower = normalizedFiltros.tab;
+    const isEscolaTab = tabSelecionadaLower === 'escola'; // Assumindo que 'escola' é o valor normalizado da aba
 
     // --- Filtro de Modalidade: IGNORADO POR ENQUANTO ---
+    // Se for reativar, certifique-se que item.modality exista e corresponda aos checkboxes
     const modalidadeMatch = true; 
 
     // --- Filtro de Bolsa ---
     let bolsaPercentMatch = true;
-    if (typeof filtros.bolsa === 'number' && item.percent) {
+    if (typeof normalizedFiltros.bolsa === 'number' && item.percent) { // item.percent é string como "50%"
       const bolsaValorItem = parseInt(String(item.percent).replace(/[^\d]/g, ''));
-      bolsaPercentMatch = !isNaN(bolsaValorItem) ? bolsaValorItem >= filtros.bolsa : false;
+      bolsaPercentMatch = !isNaN(bolsaValorItem) ? bolsaValorItem >= normalizedFiltros.bolsa : false;
     }
 
-    // --- Filtro de Aba (Tipo/Nível) ---
-    let tabMatch = true; // Padrão para true se a aba não for um critério (ex: filtros.tab não definido)
+    // --- Filtro de Aba (Tipo/Nível da Instituição) ---
+    let tabMatch = true;
     const tipoInstituicaoLower = item.institutionType?.toLowerCase();
-    if (tabSelecionadaLower) { // Aplicar filtro de aba apenas se uma aba foi selecionada
+    if (tabSelecionadaLower) {
       tabMatch = tipoInstituicaoLower === tabSelecionadaLower;
     }
 
     // --- Filtros Condicionais (Curso/Cidade, Instituição/Bairro, Localização/AnoSérie) ---
-    let inputCursoMatch, inputInstituicaoMatch, inputLocalizacaoMatch;
+    let inputCursoMatch = true;
+    let inputInstituicaoMatch = true;
+    let inputLocalizacaoMatch = true; // Para o terceiro campo de filtro
 
     if (isEscolaTab) {
       // Na aba "Escolas":
-      // filtros.curso é a "Cidade" digitada pelo usuário
-      inputCursoMatch = !filtros.curso || (item.city && item.city.toLowerCase().includes(filtros.curso.toLowerCase()));
+      // filtros.curso (normalizado) é a "Cidade" digitada pelo usuário
+      if (normalizedFiltros.curso) { // Aplicar filtro apenas se houver valor
+        inputCursoMatch = item.city && item.city.toLowerCase().includes(normalizedFiltros.curso);
+      }
       
-      // filtros.instituicao é o "Bairro" digitado pelo usuário
-      inputInstituicaoMatch = !filtros.instituicao || (item.neighborhood && item.neighborhood.toLowerCase().includes(filtros.instituicao.toLowerCase()));
+      // filtros.instituicao (normalizado) é o "Bairro" digitado pelo usuário
+      if (normalizedFiltros.instituicao) { // Aplicar filtro apenas se houver valor
+        inputInstituicaoMatch = item.neighborhood && item.neighborhood.toLowerCase().includes(normalizedFiltros.instituicao);
+      }
       
-      // filtros.cidade é "Ano/Série" - IGNORAR POR ENQUANTO
-      inputLocalizacaoMatch = true; 
+      // filtros.cidade (normalizado) é "Ano/Série" para a aba Escola
+      // Esta lógica precisa ser implementada se você quiser filtrar por Ano/Série.
+      // Por enquanto, está como true. Se item tiver um campo 'anoSerie':
+      // if (normalizedFiltros.cidade) { // 'cidade' aqui é o ano/série
+      //   inputLocalizacaoMatch = item.anoSerie && item.anoSerie.toLowerCase().includes(normalizedFiltros.cidade);
+      // }
+      // Por enquanto, mantendo como estava:
+      inputLocalizacaoMatch = true; // Ignorando filtro de Ano/Série para escolas por enquanto
+
     } else {
       // Para outras abas (Superior, Técnico, etc.):
-      inputCursoMatch = !filtros.curso || (item.course && item.course.toLowerCase().includes(filtros.curso.toLowerCase()));
-      inputInstituicaoMatch = !filtros.instituicao || (item.institution && item.institution.toLowerCase().includes(filtros.instituicao.toLowerCase()));
-      // filtros.cidade é a "Cidade onde quer estudar"
-      inputLocalizacaoMatch = !filtros.cidade || (item.location && item.location.toLowerCase().includes(filtros.cidade.toLowerCase()));
+      // filtros.curso (normalizado) é o "Curso"
+      if (normalizedFiltros.curso) {
+        inputCursoMatch = item.course && item.course.toLowerCase().includes(normalizedFiltros.curso);
+      }
+
+      // filtros.instituicao (normalizado) é a "Instituição"
+      if (normalizedFiltros.instituicao) {
+        inputInstituicaoMatch = item.institution && item.institution.toLowerCase().includes(normalizedFiltros.instituicao);
+      }
+      
+      // filtros.cidade (normalizado) é a "Cidade onde quer estudar"
+      // CORREÇÃO: Comparar com item.city em vez de item.location
+      if (normalizedFiltros.cidade) {
+        inputLocalizacaoMatch = item.city && item.city.toLowerCase().includes(normalizedFiltros.cidade);
+      }
     }
 
     return (

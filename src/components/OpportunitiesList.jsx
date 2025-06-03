@@ -14,7 +14,7 @@ export default function OpportunitiesList() {
   const [error, setError] = useState(null);
   const [currentFilters, setCurrentFilters] = useState({
     tab: 'Superior',
-    cidade: 'Recife, PE'
+    cidade: ''
   });
 
   useEffect(() => {
