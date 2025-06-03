@@ -37,6 +37,7 @@ import { OpportunitiesProvider } from './contexts/OpportunitiesContext.jsx';
 import './index.css';
 import ProfilePage from './pages/ProfilePage.jsx';
 
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -50,7 +51,7 @@ const router = createBrowserRouter([
       { path: "minhas-bolsas", element: <MyOportunities /> },
       { path: "favoritos", element: <FavoritesPage /> },
       { path: "meus-cursos", element: <MyCourses /> },
-      { path: "perfil", element: <ProfilePage /> } // Rota de fallback para páginas não encontradas
+      { path: "perfil", element: <ProfilePage /> },
     ],
   },
   {

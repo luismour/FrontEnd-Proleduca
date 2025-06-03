@@ -125,9 +125,6 @@ export default function Header({ userLoggedIn, setUserLoggedIn }) {
                         <Link to="/minhas-bolsas" onClick={() => setIsDropdownOpen(false)} className="group flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-100 hover:text-blue-600 w-full transition-colors" role="menuitem">
                             <BriefcaseIcon /> Minhas Bolsas
                         </Link>
-                        <Link to="/dependentes" onClick={() => setIsDropdownOpen(false)} className="group flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-100 hover:text-blue-600 w-full transition-colors" role="menuitem">
-                            <UsersGroupIcon /> Dependentes
-                        </Link>
                     </div>
                     <div className="border-t border-slate-100 py-1">
                         <button onClick={handleLogout} className="group flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 w-full transition-colors" role="menuitem">
