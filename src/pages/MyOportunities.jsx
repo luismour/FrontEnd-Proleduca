@@ -24,7 +24,7 @@ const StatusBadge = ({ status }) => {
       bgColor = 'bg-red-100';
       textColor = 'text-red-700';
       break;
-    case 'aprovado':
+    case 'confirmado':
     case 'rejeitado':
       textDisplay = 'Concluída';
       bgColor = 'bg-green-100';
