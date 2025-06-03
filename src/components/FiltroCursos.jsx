@@ -11,7 +11,7 @@ export default function FiltroCursos({ onBuscar }) {
     ead: true,
   });
   const [tab, setTab] = useState('Superior');
-  // Alterado 'Tecnico' para 'Técnico' (com acento) para consistência
+ 
   const tabs = ['Superior', 'Escola', 'Técnico', 'Idiomas', 'Pós'];
 
   const handleTabChange = (newTab) => {
@@ -150,7 +150,7 @@ export default function FiltroCursos({ onBuscar }) {
             </div>
 
             {/* Botão Buscar */}
-            <div className="w-full md:w-auto md:ml-auto"> {/* md:ml-auto para empurrar para a direita se houver espaço */}
+            <div className="w-full md:w-auto md:ml-auto"> 
                <button
                   onClick={handleBuscarClick}
                   className="btn btn-primary w-full md:w-auto px-10 py-3 text-sm font-semibold"

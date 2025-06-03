@@ -3,22 +3,22 @@ import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 
-// Imports do Chart.js
+
 import {
   Chart as ChartJS,
-  ArcElement,      // Para Doughnut
+  ArcElement,      
   Tooltip,
   Legend,
   Title,
-  CategoryScale,  // Para Line
-  LinearScale,    // Para Line
-  PointElement,   // Para Line
-  LineElement,    // Para Line
-  Filler          // Para preenchimento abaixo da linha (opcional)
+  CategoryScale,  
+  LinearScale,    
+  PointElement,   
+  LineElement,    
+  Filler          
 } from 'chart.js';
-import { Doughnut, Line } from 'react-chartjs-2'; // Adicionado Line
+import { Doughnut, Line } from 'react-chartjs-2'; 
 
-// Registrar os componentes do Chart.js
+
 ChartJS.register(
     ArcElement, 
     Tooltip, 
@@ -31,25 +31,25 @@ ChartJS.register(
     Filler 
 );
 
-// --- Ícones de Exemplo (Heroicons) ---
-const UsersIcon = () => ( /* ...código do ícone... */ <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-blue-500">
+
+const UsersIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-blue-500">
 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
 </svg>);
-const InstitutionIcon = () => ( /* ...código do ícone... */ <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-indigo-500">
+const InstitutionIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-indigo-500">
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V5.63M21 12v-2.25" />
 </svg>);
-const CourseIcon = () => ( /* ...código do ícone... */ <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-purple-500">
+const CourseIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-purple-500">
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
 </svg>);
-const InscriptionIcon = () => ( /* ...código do ícone... */ <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-green-500">
+const InscriptionIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-green-500">
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
 </svg>);
-const ClockIcon = () => (  /* ...código do ícone... */ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-yellow-500">
+const ClockIcon = () => (  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-yellow-500">
     <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clipRule="evenodd" />
 </svg>);
-// --- Fim dos Ícones ---
 
-const StatCard = ({ title, value, icon, linkTo, isLoading }) => ( /* ...código do StatCard... */ <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
+
+const StatCard = ({ title, value, icon, linkTo, isLoading }) => (  <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
 <div className="flex items-center justify-between">
   <div>
     <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">{title}</p>
@@ -129,15 +129,15 @@ export default function Dashboard() {
     fetchDashboardData();
   }, []);
   
-  const formatDate = (dateString) => { /* ...código formatDate... */  if (!dateString) return 'N/A';
-  // Supondo que a data já vem como AAAA-MM-DD da API
+  const formatDate = (dateString) => {   if (!dateString) return 'N/A';
+
   const parts = dateString.split('-');
   if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-  // Fallback se o formato for diferente
+
   return new Date(dateString).toLocaleDateString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit' });};
 
   // Gráfico de Rosca: Inscrições por Status
-  const inscriptionStatusChartData = useMemo(() => { /* ...código inscriptionStatusChartData como antes... */   if (!allInscriptionsData || allInscriptionsData.length === 0) {
+  const inscriptionStatusChartData = useMemo(() => {   if (!allInscriptionsData || allInscriptionsData.length === 0) {
     return null;
   }
 
@@ -179,7 +179,7 @@ export default function Dashboard() {
       },
     ],
   }; }, [allInscriptionsData]);
-  const doughnutChartOptions = { /* ...código doughnutChartOptions como antes... */   responsive: true,
+  const doughnutChartOptions = {  responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
@@ -216,7 +216,6 @@ export default function Dashboard() {
     }
   }, };
 
-  // NOVO: Gráfico de Linha: Novas Inscrições por Mês
   const monthlyInscriptionsChartData = useMemo(() => {
     if (!allInscriptionsData || allInscriptionsData.length === 0) {
       return null;
@@ -232,7 +231,7 @@ export default function Dashboard() {
       return acc;
     }, {});
 
-    // Ordenar os meses
+ 
     const sortedMonths = Object.keys(monthlyCounts).sort((a, b) => new Date(a) - new Date(b));
 
     const labels = sortedMonths.map(monthYear => {
@@ -265,10 +264,10 @@ export default function Dashboard() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false, // Pode ocultar a legenda se só tiver um dataset
+        display: false, 
       },
       title: {
-        display: false, // O título já está no card
+        display: false, 
       },
       tooltip: {
         mode: 'index',
@@ -284,11 +283,11 @@ export default function Dashboard() {
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1, // Mostrar apenas números inteiros no eixo Y
+          stepSize: 1, 
           callback: function(value) {if (Number.isInteger(value)) {return value;}}
         },
         grid: {
-            color: 'rgba(200, 200, 200, 0.2)', // Linhas de grade mais sutis
+            color: 'rgba(200, 200, 200, 0.2)', 
         }
       },
     },

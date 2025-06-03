@@ -3,16 +3,14 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axiosInstance from '../api/axiosInstance.js';
 import LoadingSpinner from '../components/LoadingSpinner';
-// Footer e Header são geralmente do App.jsx
 
-// Ícone de Seta para Voltar
-const BackArrowIcon = ({ className = "w-5 h-5 mr-2" }) => ( // Adicionado mr-2 para espaçamento
+
+const BackArrowIcon = ({ className = "w-5 h-5 mr-2" }) => ( 
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className}>
     <path fillRule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.56l2.72 2.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 1 1 1.06 1.06L5.56 9.25H16.25A.75.75 0 0 1 17 10Z" clipRule="evenodd" />
   </svg>
 );
 
-// Ícones para detalhes do curso
 const MapPinIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-slate-500">
     <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -42,7 +40,7 @@ export default function BolsaPage() {
   const [opportunity, setOpportunity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Hook para navegação
+  const navigate = useNavigate(); 
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -71,11 +69,10 @@ export default function BolsaPage() {
     }
   };
 
-  if (loading) { /* ... estado de loading ... */ }
-  if (error) { /* ... estado de erro ... */ }
-  if (!opportunity) { /* ... estado sem oportunidade ... */ }
+  if (loading) 
+  if (error) 
+  if (!opportunity) 
 
-  // Código dos estados de loading, error e !opportunity omitido para brevidade, mas mantenha como estava
   if (loading) {
     return (
       <div className="min-h-[calc(100vh-128px)] flex justify-center items-center bg-slate-50">
@@ -110,7 +107,7 @@ export default function BolsaPage() {
         {/* Botão Voltar */}
         <div className="mb-6">
           <button
-            onClick={() => navigate(-1)} // Volta para a página anterior no histórico
+            onClick={() => navigate(-1)} 
             className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors duration-150 group"
           >
             <BackArrowIcon className="w-5 h-5 mr-1.5 text-slate-500 group-hover:text-blue-500 transition-colors" />
@@ -119,7 +116,7 @@ export default function BolsaPage() {
         </div>
 
         <div className="lg:grid lg:grid-cols-3 lg:gap-x-12 items-start">
-          {/* Coluna Esquerda: Imagem e Descrição do Curso */}
+
           <div className="lg:col-span-2 mb-8 lg:mb-0">
             <div className="aspect-w-16 aspect-h-9 bg-slate-100 rounded-xl shadow-lg overflow-hidden mb-6">
               <img
@@ -152,12 +149,11 @@ export default function BolsaPage() {
             </div>
           </div>
 
-          {/* Coluna Direita: Card de Inscrição e Detalhes da Instituição */}
           <div className="lg:col-span-1 space-y-8 sticky top-24">
             <div className="bg-white rounded-xl shadow-xl p-6">
               <h2 className="text-xl font-semibold text-slate-800 mb-1">Sua Oportunidade Edupass</h2>
               {opportunity.percentageScholarship && (
-                <div className="flex items-center text-sm text-green-600 font-semibold my-3"> {/* Aumentado margin-bottom */}
+                <div className="flex items-center text-sm text-green-600 font-semibold my-3">
                     <TagIcon />
                     <span className="ml-1.5">Bolsa de {opportunity.percentageScholarship}% disponível!</span>
                 </div>

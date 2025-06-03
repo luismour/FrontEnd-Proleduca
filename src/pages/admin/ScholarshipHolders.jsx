@@ -48,7 +48,7 @@ export default function ScholarshipHolders() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await axiosInstance.get("/scholarship-holders"); // Endpoint GET para listar bolsistas
+      const res = await axiosInstance.get("/scholarship-holders"); 
       setAllBolsistas(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Erro ao buscar bolsistas:", err);
@@ -64,7 +64,7 @@ export default function ScholarshipHolders() {
       setIsLoading(true); 
       setError(null);
       try {
-        await axiosInstance.delete(`/scholarship-holders/${bolsistaId}`); // Endpoint DELETE
+        await axiosInstance.delete(`/scholarship-holders/${bolsistaId}`); 
         alert("Bolsista excluído com sucesso!");
         fetchBolsistas();
       } catch (err) {
@@ -87,7 +87,7 @@ export default function ScholarshipHolders() {
 
     return allBolsistas.filter(bolsista => {
       const fullNameMatch = bolsista.fullName && bolsista.fullName.toLowerCase().includes(lowerSearchTerm);
-      // Verifica o CPF do bolsista e também o CPF do customer associado, se existir e for útil na busca
+    
       const bolsistaCpfMatch = bolsista.cpf && bolsista.cpf.replace(/\D/g, '').includes(searchTermDigits);
       const customerCpfMatch = bolsista.customers?.cpf && bolsista.customers.cpf.replace(/\D/g, '').includes(searchTermDigits);
       
@@ -102,7 +102,7 @@ export default function ScholarshipHolders() {
           Gerenciar Bolsistas
         </h1>
         <Link
-          to="/admin/scholarship-holders/new" // Rota para o formulário de adicionar
+          to="/admin/scholarship-holders/new" 
           className="btn btn-primary inline-flex items-center w-full sm:w-auto justify-center"
         >
           <PlusIcon />

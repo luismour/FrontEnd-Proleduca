@@ -21,13 +21,13 @@ import InstitutionForm from './pages/admin/InstitutionForm.jsx';
 import Courses from './pages/admin/Courses.jsx';
 import CourseForm from './pages/admin/CoursesForm.jsx'; 
 import Users from './pages/admin/Users.jsx';
-// import UserForm from './pages/admin/UserForm.jsx'; // Adicione se/quando criar UserForm
+// import UserForm from './pages/admin/UserForm.jsx'; 
 import ScholarshipHolders from './pages/admin/ScholarshipHolders.jsx';
 import ScholarshipHolderForm from './pages/admin/ScholarshipHolderForm.jsx';
 import Inscriptions from './pages/admin/Inscriptions.jsx';
-import InscriptionDetails from './pages/admin/InscripitionDetails.jsx'; // Corrigido: InscripitionDetails -> InscriptionDetails
-// import Dependents from './pages/admin/Dependents.jsx'; // Adicione se/quando criar
-// import DependentForm from './pages/admin/DependentForm.jsx'; // Adicione se/quando criar
+import InscriptionDetails from './pages/admin/InscripitionDetails.jsx'; 
+// import Dependents from './pages/admin/Dependents.jsx'; 
+// import DependentForm from './pages/admin/DependentForm.jsx'; 
 
 import PrivateRoute from './components/PrivateRoute.jsx';
 
@@ -69,14 +69,11 @@ const router = createBrowserRouter([
           { path: "courses/new", element: <CourseForm /> },
           { path: "courses/edit/:id", element: <CourseForm /> },
           { path: "users", element: <Users /> },
-          // { path: "users/new", element: <UserForm /> }, // Adicione quando UserForm estiver pronto
-          // { path: "users/edit/:id", element: <UserForm /> }, // Adicione quando UserForm estiver pronto
           { path: "scholarship-holders", element: <ScholarshipHolders /> },
           { path: "scholarship-holders/new", element: <ScholarshipHolderForm /> }, 
           { path: "scholarship-holders/edit/:id", element: <ScholarshipHolderForm /> },
           { path: "inscriptions", element: <Inscriptions /> },
           { path: "inscriptions/:id", element: <InscriptionDetails /> },
-          // { path: "dependents", element: <Dependents /> }, // Adicione quando estiver pronto
         ]
       }
     ]
@@ -87,8 +84,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AppProvider>
       <OpportunitiesProvider>
-        {/* Se ThemeProvider deve envolver toda a app, mova-o para cá. 
-            Se for só para o admin, a colocação atual está correta. */}
+        {/*  */}
         <RouterProvider router={router} />
       </OpportunitiesProvider>
     </AppProvider>

@@ -12,7 +12,7 @@ const BackArrowIcon = () => (
     </svg>
 );
 
-// Ícone de Lupa para o campo de busca
+
 const SearchIconInput = ({ className = "w-4 h-4 text-gray-400" }) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={className}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -99,7 +99,7 @@ export default function CoursesForm() {
     }, [allInstitutions, institutionSearchTerm]);
 
     const validationSchema = Yup.object().shape({
-        // ... (validações como antes)
+      
         institutionsId: Yup.number().required('Instituição é obrigatória.'),
         name: Yup.string().required('Nome do curso é obrigatório.'),
         vacancies: Yup.number().required('Número de vagas é obrigatório.').min(0, 'Vagas não podem ser negativas.').integer('Vagas devem ser um número inteiro.'),
@@ -118,7 +118,7 @@ export default function CoursesForm() {
     });
 
     const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-        // ... (handleSubmit como antes)
+      
         setFormError('');
         setSubmitting(true);
         const payload = {
@@ -264,7 +264,7 @@ export default function CoursesForm() {
                                     <ErrorMessage name="description" component="div" className="form-error" />
                                 </div>
 
-                                {/* ... (outros campos do formulário como antes) ... */}
+                              
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label htmlFor="vacancies" className="form-label">Vagas*</label>

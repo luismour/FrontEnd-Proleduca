@@ -9,7 +9,7 @@ export default function Clients() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    axios.get("/") // ou substitua pela URL real futuramente
+    axios.get("/") 
       .then(res => setClients(res.data))
       .catch(() => setClients([]));
   }, []);

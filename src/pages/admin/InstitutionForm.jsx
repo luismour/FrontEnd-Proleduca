@@ -15,12 +15,12 @@ const initialFormState = {
   nameResponsible: "",
   cellResponsible: "",
   emailResponsible: "",
-  type: "Superior", // Valor padrão
+  type: "Superior", 
   urlImage: "",
   status: true,
 };
 
-// Ícone de Voltar (Exemplo SVG)
+
 const BackArrowIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-2">
     <path fillRule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.56l2.72 2.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 1 1 1.06 1.06L5.56 9.25H16.25A.75.75 0 0 1 17 10Z" clipRule="evenodd" />
@@ -116,7 +116,7 @@ export default function InstitutionForm() {
     try {
       await axiosInstance[method](apiPath, formData);
       alert(`Instituição ${institutionId ? 'atualizada' : 'criada'} com sucesso!`);
-      navigate("/admin/institutions"); // Volta para a lista após sucesso
+      navigate("/admin/institutions"); 
     } catch (err) {
       console.error(`Erro ao ${institutionId ? 'atualizar' : 'criar'} instituição:`, err.response?.data || err.message);
       const apiError = err.response?.data?.message || err.response?.data?.error || `Falha ao ${institutionId ? 'atualizar' : 'criar'} instituição.`;

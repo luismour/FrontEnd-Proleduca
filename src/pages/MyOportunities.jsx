@@ -8,7 +8,7 @@ import Footer from '../components/Footer';
 const defaultLogo = 'https://via.placeholder.com/100/E0E0E0/9E9E9E?text=Logo';
 
 const StatusBadge = ({ status }) => {
-  // ... (código do StatusBadge como antes)
+ 
   let bgColor, textColor, textDisplay;
   const normalizedStatus = status ? status.toLowerCase() : 'desconhecido';
 
@@ -50,10 +50,9 @@ export default function MyOportunities() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // Usaremos uma ref para armazenar o CPF do cliente logado para evitar que
-  // a mudança desse valor recrie a função fetchRegistrations.
+
   const loggedInCustomerCpfRef = useRef(null);
-  const initialFetchDoneRef = useRef(false); // Para controlar a execução única do fetch inicial
+  const initialFetchDoneRef = useRef(false); 
 
   const processAndSetRegistrations = useCallback((apiData, customerId) => {
     let allSystemRegistrations = [];
@@ -108,7 +107,7 @@ export default function MyOportunities() {
     });
 
     setRegistrations(processedRegistrations);
-  }, []); // Sem dependências que mudam frequentemente
+  }, []); 
 
   const fetchInitialData = useCallback(async () => {
     if (!user || !user.id) {
@@ -119,7 +118,7 @@ export default function MyOportunities() {
     }
 
     setLoading(true);
-    setError(null); // Limpa erros anteriores
+    setError(null); 
     try {
       const response = await axiosInstance.get(`/registrations`);
       console.log("MyOportunities: API Response Data (TODAS AS INSCRIÇÕES):", response.data);
@@ -127,21 +126,21 @@ export default function MyOportunities() {
     } catch (err) {
       console.error("Erro ao buscar inscrições:", err);
       setError(err.response?.data?.message || "Não foi possível carregar suas inscrições.");
-      setRegistrations([]); // Limpa registros em caso de erro
+      setRegistrations([]); 
     } finally {
       setLoading(false);
     }
-  }, [user, navigate, processAndSetRegistrations]); // processAndSetRegistrations é estável
+  }, [user, navigate, processAndSetRegistrations]); 
 
   useEffect(() => {
     if (user && user.id && !initialFetchDoneRef.current) {
       fetchInitialData();
-      initialFetchDoneRef.current = true; // Marca que o fetch inicial foi feito
-    } else if (!user) { // Se não há usuário, redireciona (mas apenas se não estiver já no login)
+      initialFetchDoneRef.current = true; 
+    } else if (!user) { 
         if (window.location.pathname !== "/login") {
             navigate("/login");
         }
-        setLoading(false); // Garante que o loading pare se não houver usuário
+        setLoading(false); 
     }
   }, [user, navigate, fetchInitialData]);
 
@@ -150,7 +149,7 @@ export default function MyOportunities() {
     if (!window.confirm("Você tem certeza que deseja cancelar sua inscrição nesta bolsa?")) {
       return;
     }
-    setLoading(true); // Indica que uma operação está em andamento
+    setLoading(true); 
     try {
       const registrationToUpdate = registrations.find(reg => reg.id === registrationId);
       if (!registrationToUpdate) {
@@ -168,15 +167,15 @@ export default function MyOportunities() {
 
       await axiosInstance.put(`/registrations/${registrationId}`, payload);
       alert("Inscrição cancelada com sucesso!");
-      // Re-busca os dados para refletir a mudança
-      initialFetchDoneRef.current = false; // Permite que o fetch inicial rode novamente
-      await fetchInitialData(); // Chama a função de busca encapsulada
+     
+      initialFetchDoneRef.current = false; 
+      await fetchInitialData(); 
     } catch (err) {
       console.error("Erro ao cancelar inscrição:", err.response?.data || err.message);
       alert(`Erro ao cancelar inscrição: ${err.response?.data?.message || 'Ocorreu um erro.'}`);
-      setLoading(false); // Garante que setLoading seja false em caso de erro
+      setLoading(false); 
     } 
-    // O setLoading(false) já está no finally do fetchInitialData
+   
   };
   
   if (loading && registrations.length === 0) {
@@ -254,7 +253,7 @@ export default function MyOportunities() {
                     </h3>
                     <p className="text-sm text-slate-700 mb-3">
                       Beneficiário: <span className="font-medium">{registration.beneficiaryName}</span>
-                      {!registration.isOwnScholarship && loggedInCustomerCpfRef.current && ( // Usa a ref aqui para a condição
+                      {!registration.isOwnScholarship && loggedInCustomerCpfRef.current && ( 
                         <span className="text-xs text-slate-500"> (Dependente)</span>
                       )}
                     </p>

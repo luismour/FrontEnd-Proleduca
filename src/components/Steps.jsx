@@ -1,8 +1,6 @@
-// src/components/Steps.jsx
+
 import React from 'react';
 
-// --- Ícones SVG de Exemplo ---
-// Você pode substituir por seus próprios ícones ou uma biblioteca como react-icons/heroicons
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 text-blue-500 mb-4">
     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -20,7 +18,7 @@ const CheckBadgeIcon = () => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
 );
-// --- Fim dos Ícones ---
+
 
 export default function Steps() {
   const stepsData = [
@@ -62,7 +60,7 @@ export default function Steps() {
             <div className="absolute left-2/3 top-0 h-full w-1/3 border-t-2 border-dashed border-slate-300"></div> {/* Linha entre 2 e 3 */}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10"> {/* z-10 para cards ficarem sobre a linha */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10"> 
             {stepsData.map((step, index) => (
               <div 
                 key={step.number} 
@@ -72,10 +70,10 @@ export default function Steps() {
                   <div className="flex items-center justify-center w-16 h-16 rounded-full bg-blue-500 text-white font-bold text-2xl shadow-md">
                     {step.number}
                   </div>
-                  {/* Posicionamento do ícone sobreposto ao número, se desejado, ou apenas acima */}
+          
                 </div>
                 
-                {step.icon} {/* Ícone SVG */}
+                {step.icon} 
                 
                 <h3 className="text-xl font-semibold text-slate-800 mb-2 mt-2">{step.title}</h3>
                 <p className="text-sm text-slate-600 leading-relaxed">

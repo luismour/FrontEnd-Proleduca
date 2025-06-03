@@ -150,7 +150,7 @@ export default function Courses() {
                 </li>
               ))}
             </ul>
-          ) : ( /* Este caso não deveria ocorrer se a instituição só aparece se tiver cursos */
+          ) : ( 
             <p className="p-6 text-gray-500">Nenhum curso encontrado para esta instituição.</p>
           )}
         </div>

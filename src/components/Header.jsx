@@ -1,16 +1,15 @@
-// src/components/Header.jsx
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-// --- Ícones SVG ---
-// UserIcon para o botão do dropdown quando logado
+
 const UserIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-slate-600 group-hover:text-blue-600">
     <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clipRule="evenodd" />
   </svg>
 );
 
-// Ícones para os itens do Dropdown
+
 const ProfileIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-3 text-slate-500 group-hover:text-blue-600 transition-colors">
     <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12.5a7.5 7.5 0 0 0-7.465 5.266.75.75 0 0 0 .959.806 6 6 0 0 1 13.012 0 .75.75 0 0 0 .96-.806A7.5 7.5 0 0 0 10 12.5Z" clipRule="evenodd" />
@@ -22,7 +21,7 @@ const BriefcaseIcon = () => (
     <path d="M7.25 4h5.5A.75.75 0 0013.5 3.25v-1.5A.75.75 0 0012.75 1h-5.5A.75.75 0 006.5 1.75v1.5A.75.75 0 007.25 4z" /> {/* Adicionada a alça da maleta */}
   </svg>
 );
-const UsersGroupIcon = () => ( // Ícone para "Dependentes", mais genérico
+const UsersGroupIcon = () => ( 
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-3 text-slate-500 group-hover:text-blue-600 transition-colors">
     <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.25 1.25 0 0 0 .41 1.415A8.969 8.969 0 0 0 10 18c1.994 0 3.868-.594 5.124-1.592a1.25 1.25 0 0 0 .41-1.415A8.969 8.969 0 0 0 10 12c-1.994 0-3.868.594-5.124-1.592a1.25 1.25 0 0 0-.411 1.415ZM15.93 14.01A7.475 7.475 0 0 1 10 13.5c-1.345 0-2.61.336-3.703.937a.75.75 0 0 0-1.03-.037L3.067 16.15a.75.75 0 0 0 1.03.037 5.974 5.974 0 0 1 1.885-1.113.75.75 0 0 0 .446-1.313A9.004 9.004 0 0 0 10 5c.939 0 1.826.17 2.642.486a.75.75 0 0 0 .446 1.313 5.975 5.975 0 0 1 1.885 1.113.75.75 0 0 0 1.03-.037l2.2-1.739a.75.75 0 0 0-1.03-.038A7.475 7.475 0 0 1 15.93 14.01Z" />
   </svg>
@@ -33,7 +32,7 @@ const LogoutIcon = () => (
     <path fillRule="evenodd" d="M19 10a.75.75 0 0 0-.75-.75H8.704l1.048-.943a.75.75 0 1 0-1.004-1.114l-2.5 2.25a.75.75 0 0 0 0 1.114l2.5 2.25a.75.75 0 1 0 1.004-1.114l-1.048-.943H18.25A.75.75 0 0 0 19 10Z" clipRule="evenodd" />
   </svg>
 );
-// --- Fim dos Ícones SVG ---
+
 
 export default function Header({ userLoggedIn, setUserLoggedIn }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -77,10 +76,10 @@ export default function Header({ userLoggedIn, setUserLoggedIn }) {
             </Link>
           </div>
 
-          {/* Navegação Desktop (Deslogado e Logado) */}
+     
           <nav className="hidden md:flex items-center space-x-6">
             <Link 
-              to="/parceria-instituicoes" // Crie esta rota se necessário
+              to="/parceria-instituicoes" 
               className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors"
             >
               Parceria Instituições
@@ -144,7 +143,7 @@ export default function Header({ userLoggedIn, setUserLoggedIn }) {
                 </Link>
                 <Link
                   to="/cadastro"
-                  className="btn btn-primary px-5 py-2 text-sm" // Usando classe global
+                  className="btn btn-primary px-5 py-2 text-sm" 
                 >
                   Cadastre-se Grátis
                 </Link>

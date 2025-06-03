@@ -40,7 +40,7 @@ export default function Login() {
   const { setUserLoggedIn } = useOutletContext();
 
   const handleLogin = async (values, { setSubmitting, setFieldError }) => {
-    // ... (sua lógica de handleLogin como antes) ...
+
     setMessage(""); 
     try {
       const response = await axiosInstance.post("/edupass/login", values);
@@ -86,7 +86,7 @@ export default function Login() {
             Crie sua conta e tenha acesso a bolsas de estudo exclusivas e cursos para impulsionar sua carreira!
           </p>
           <Link
-            to="/cadastro" // Link para a página de registro
+            to="/cadastro" 
             className="px-8 py-3.5 font-semibold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-opacity-75 shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150 ease-in-out self-center md:self-auto"
           >
             Criar Minha Conta Agora

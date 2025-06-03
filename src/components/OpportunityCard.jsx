@@ -101,15 +101,6 @@ export default function OpportunityCard({
           </div>
         </div>
 
-        {/* Botão de Ação (opcional, se o card inteiro não for o link principal) */}
-        {/* Se quiser um botão explícito dentro do card, pode adicionar aqui,
-           mas como o card inteiro é um link, pode ser redundante.
-        <div className="p-4 border-t border-slate-100">
-          <span className="block w-full text-center btn btn-sm btn-primary-outline">
-            Ver Bolsa
-          </span>
-        </div>
-        */}
       </div>
     </Link>
   );

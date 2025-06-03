@@ -10,13 +10,13 @@ export default function MyOportunities() {
     axios.get("/api/minhas-bolsas")
       .then((res) => {
         console.log("Resposta da API:", res.data);
-        // Garante que será um array
+       
         const data = Array.isArray(res.data) ? res.data : res.data.bolsas || [];
         setMinhasBolsas(data);
       })
       .catch((err) => {
         console.error("Erro ao buscar bolsas:", err);
-        // Fallback mock
+    
         setMinhasBolsas([
           {
             id: 1,

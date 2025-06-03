@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; 
 import axiosInstance from "../../api/axiosInstance";
 
-// --- Ícones (mantidos como no seu arquivo original) ---
+
 const CheckCircleIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-green-600">
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16Zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
@@ -36,7 +36,7 @@ const EyeIcon = () => (
       <path fillRule="evenodd" d="M.664 10.59a1.651 1.651 0 0 1 0-1.18l.82-1.425a1.651 1.651 0 0 1 1.518-.888h1.908a1.651 1.651 0 0 1 1.518.888l.82 1.425a1.651 1.651 0 0 1 0 1.18l-.82 1.425a1.651 1.651 0 0 1-1.518.888H2.998a1.651 1.651 0 0 1-1.518-.888l-.819-1.425ZM6.25 10a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0Z" clipRule="evenodd" />
     </svg>
 );
-// --- Fim dos Ícones ---
+
 
 const StatusBar = ({ status }) => {
     let progressColor = 'bg-gray-400'; 
@@ -138,23 +138,23 @@ export default function Inscriptions() {
     );
 
     try {
-      // Construindo o payload conforme o JSON CORRETO especificado
+     
       const payload = {
         status: newStatus,
-        // Usar os nomes de chave corretos e apenas os IDs
+      
         scholarshipHolderId: inscriptionToUpdate.scholarshipHolders?.id,
         courseId: inscriptionToUpdate.courses?.id,
         registrationDate: inscriptionToUpdate.registrationDate 
       };
       
-      // Validação para garantir que os IDs não são nulos ou undefined ANTES de enviar, se forem obrigatórios
+    
       if (payload.scholarshipHolderId === undefined || payload.scholarshipHolderId === null) {
         throw new Error(`ID do Bolsista (scholarshipHolderId) é nulo ou indefinido para a inscrição ${inscriptionId}.`);
       }
       if (payload.courseId === undefined || payload.courseId === null) {
         throw new Error(`ID do Curso (courseId) é nulo ou indefinido para a inscrição ${inscriptionId}.`);
       }
-      if (!payload.registrationDate) { // Se a data for obrigatória e estiver faltando
+      if (!payload.registrationDate) {
         throw new Error(`Data de Registro (registrationDate) está faltando para a inscrição ${inscriptionId}.`);
       }
 
@@ -162,13 +162,13 @@ export default function Inscriptions() {
       console.log("Admin/Inscriptions: Atualizando inscrição ID:", inscriptionId, "Payload para PUT:", payload);
       await axiosInstance.put(`/registrations/${inscriptionId}`, payload); 
       
-      // Atualiza o estado local após o sucesso
+   
       setInscriptions(prevInscriptions =>
         prevInscriptions.map(insc =>
           insc.id === inscriptionId ? 
           { 
-            ...inscriptionToUpdate, // Pega todos os campos da inscrição original
-            status: newStatus,      // Atualiza o status
+            ...inscriptionToUpdate, 
+            status: newStatus,      
             _isUpdating: false 
           } : insc
         )
@@ -178,7 +178,7 @@ export default function Inscriptions() {
       const apiError = err.response?.data?.message || err.message || "Falha ao atualizar status da inscrição.";
       setError(apiError); 
       alert(apiError);
-      setInscriptions(originalInscriptions); // Reverte para o estado original em caso de erro
+      setInscriptions(originalInscriptions); 
     }
   };
 

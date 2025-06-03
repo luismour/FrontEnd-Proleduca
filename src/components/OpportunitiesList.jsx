@@ -16,7 +16,7 @@ export default function OpportunitiesList() {
     tab: 'Superior',
     cidade: ''
   });
-  const [availableLocations, setAvailableLocations] = useState([]); // Novo estado para localidades
+  const [availableLocations, setAvailableLocations] = useState([]); 
 
   useEffect(() => {
     const fetchCursos = async () => {
@@ -53,11 +53,11 @@ export default function OpportunitiesList() {
           };
         });
 
-        // Coletar cidades e estados únicos
+    
         const uniqueLocations = new Set();
         oportunidadesFormatadas.forEach(op => {
           if (op.city) uniqueLocations.add(op.city);
-          if (op.state) uniqueLocations.add(op.state); // Adiciona a sigla do estado
+          if (op.state) uniqueLocations.add(op.state); 
         });
         const sortedLocations = Array.from(uniqueLocations).sort((a, b) => a.localeCompare(b));
         setAvailableLocations(sortedLocations);
@@ -104,7 +104,6 @@ export default function OpportunitiesList() {
 
   return (
     <div className="w-full">
-      {/* Passa availableLocations para o FiltroCursos */}
       <FiltroCursos onBuscar={handleBuscar} availableLocations={availableLocations} />
 
       <div className="bg-white py-10 md:py-16">

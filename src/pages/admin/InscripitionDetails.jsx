@@ -9,7 +9,7 @@ const BackArrowIcon = () => (
   </svg>
 );
 
-// Reutilizando StatusBar da página de listagem (poderia ser um componente importado)
+
 const CheckCircleIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-green-600">
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16Zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
@@ -68,7 +68,7 @@ export default function InscriptionDetails() {
     if (inscriptionId) {
       setIsLoading(true);
       setError(null);
-      axiosInstance.get(`/registrations/${inscriptionId}`) // Assumindo este endpoint
+      axiosInstance.get(`/registrations/${inscriptionId}`) 
         .then(res => {
           setInscription(res.data);
         })
@@ -184,7 +184,7 @@ export default function InscriptionDetails() {
             <h3 className="text-lg leading-6 font-medium text-gray-900 mb-3">Detalhes Adicionais da Inscrição</h3>
             <dl className="divide-y divide-gray-200">
                 <DetailItem label="Data da Inscrição" value={formatDate(registrationDate)} />
-                {/* Adicione outros campos da inscrição aqui se houver */}
+            
             </dl>
         </div>
 

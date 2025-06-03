@@ -20,21 +20,20 @@ const BackArrowIcon = () => (
   </svg>
 );
 
-// Opções para Raça/Cor (ajuste conforme necessário)
+
 const raceColorOptions = ["Parda", "Branca", "Preta", "Amarela", "Indígena", "Não Declarada"];
 
 export default function ScholarshipHolderForm() {
   const [formData, setFormData] = useState(initialFormState);
-  const [customersList, setCustomersList] = useState([]); // Para o select de clientes
+  const [customersList, setCustomersList] = useState([]); 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
-  const { id: bolsistaId } = useParams(); // ID do bolsista para edição
-
+  const { id: bolsistaId } = useParams(); 
   useEffect(() => {
-    // Buscar lista de clientes (usuários) para o select
-    axiosInstance.get("/customers") // Endpoint que lista usuários (customers)
+   
+    axiosInstance.get("/customers") 
       .then(res => {
         setCustomersList(Array.isArray(res.data) ? res.data : []);
       })
@@ -51,9 +50,9 @@ export default function ScholarshipHolderForm() {
           setFormData({
             customers: data.customers?.id?.toString() || "",
             fullName: data.fullName || "",
-            dateOfBirth: data.dateOfBirth ? data.dateOfBirth.split('T')[0] : "", // Formato YYYY-MM-DD
+            dateOfBirth: data.dateOfBirth ? data.dateOfBirth.split('T')[0] : "", 
             needs: typeof data.needs === 'boolean' ? data.needs : false,
-            cpf: data.cpf || "", // O CPF aqui pode vir formatado ou não da API
+            cpf: data.cpf || "", 
             raceColor: data.raceColor || "",
           });
         })
@@ -63,7 +62,7 @@ export default function ScholarshipHolderForm() {
         })
         .finally(() => setIsLoading(false));
     } else {
-      setFormData(initialFormState); // Limpa para novo bolsista
+      setFormData(initialFormState); 
     }
   }, [bolsistaId]);
 
@@ -73,7 +72,7 @@ export default function ScholarshipHolderForm() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
-    if (formErrors[name]) { // Limpa erro do campo ao digitar
+    if (formErrors[name]) { 
         setFormErrors(prev => ({...prev, [name]: null}));
     }
   };
@@ -85,7 +84,7 @@ export default function ScholarshipHolderForm() {
     if (!formData.cpf.trim()) errors.cpf = "CPF é obrigatório.";
     else if (!validarCPF(formData.cpf)) errors.cpf = "CPF inválido.";
     if (!formData.dateOfBirth) errors.dateOfBirth = "Data de nascimento é obrigatória.";
-    // Adicione mais validações se necessário (ex: raceColor)
+ 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -102,11 +101,11 @@ export default function ScholarshipHolderForm() {
     const cpfUnformatted = formData.cpf.replace(/[^\d]/g, '');
 
     const payload = {
-      customers: parseInt(formData.customers), // Deve ser o ID do cliente
+      customers: parseInt(formData.customers), 
       fullName: formData.fullName,
-      dateOfBirth: formData.dateOfBirth, // YYYY-MM-DD
+      dateOfBirth: formData.dateOfBirth, 
       needs: formData.needs,
-      cpf: cpfUnformatted, // CPF sem formatação (ajuste se o backend espera formatado para este endpoint)
+      cpf: cpfUnformatted, 
       raceColor: formData.raceColor,
     };
 
@@ -127,7 +126,7 @@ export default function ScholarshipHolderForm() {
     }
   };
   
-  if (isLoading && bolsistaId) { // Mostra carregando apenas se estiver buscando dados para edição
+  if (isLoading && bolsistaId) { 
     return <div className="p-8 text-center text-gray-500">Carregando dados do bolsista...</div>;
   }
 

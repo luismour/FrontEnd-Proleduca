@@ -1,22 +1,22 @@
 // src/pages/admin/Users.jsx
 import { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance from "../../api/axiosInstance"; //
+import axiosInstance from "../../api/axiosInstance"; 
 
-// --- Ícones ---
-const PlusIcon = () => ( /* ...código do ícone... */ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-2">
+
+const PlusIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-2">
 <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
 </svg>);
-const EditIcon = () => ( /* ...código do ícone... */ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+const EditIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
   <path d="M2.695 14.763l-1.262 3.154a.5.5 0 0 0 .65.65l3.155-1.262a4 4 0 0 0 1.343-.885L17.5 5.5a2.121 2.121 0 0 0-3-3L3.58 13.42a4 4 0 0 0-.885 1.343Z" />
 </svg>);
-const TrashIcon = () => ( /* ...código do ícone... */ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+const TrashIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
 <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.58.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25V4.075c.827-.05 1.66-.075 2.5-.075Z" clipRule="evenodd" />
 </svg>);
-const SearchIcon = () => ( /* ...código do ícone... */ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-gray-400">
+const SearchIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-gray-400">
 <path fillRule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clipRule="evenodd" />
 </svg>);
-const NoUsersIcon = () => ( /* ...código do ícone... */ <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+const NoUsersIcon = () => ( <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0zM17.25 15H21m-3.75-3.75H21m-3.75-3.75H21" />
 </svg>);
 
@@ -87,14 +87,6 @@ export default function Users() {
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
           Gerenciar Usuários
         </h1>
-        {/* Adicionar Link para novo usuário se existir a rota e o formulário UserForm.jsx */}
-        {/* <Link
-          to="/admin/users/new"
-          className="btn btn-primary inline-flex items-center w-full sm:w-auto justify-center"
-        >
-          <PlusIcon />
-          Adicionar Usuário
-        </Link> */}
       </header>
 
       {error && (
@@ -127,7 +119,6 @@ export default function Users() {
             <h3 className="mt-2 text-lg font-medium text-gray-900">
               {searchTerm ? "Nenhum usuário encontrado." : "Nenhum usuário cadastrado"}
             </h3>
-            {/* {!searchTerm && <p className="mt-1 text-sm text-gray-500">Comece adicionando um novo usuário.</p>} */}
           </div>
         )}
         
