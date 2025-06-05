@@ -131,16 +131,9 @@ export default function CadastroBolsista() {
         raceColor: values.raceColor,
       };
 
-      console.log("Payload para criar bolsista:", bolsistaPayload);
       const bolsistaRes = await axiosInstance.post('/scholarship-holders/create', bolsistaPayload);
 
-      console.log("Resposta completa da API (criação bolsista):", bolsistaRes);
-      console.log("Dados da resposta da API (bolsistaRes.data):", bolsistaRes.data);
-
-
       const bolsistaId = bolsistaRes.data?.scholarshipHoldeId
-
-      console.log("Bolsista ID extraído:", bolsistaId);
 
       if (!bolsistaId && bolsistaId !== 0) { 
         let errorMessage = "ID do bolsista não retornado corretamente após a criação.";
@@ -159,13 +152,10 @@ export default function CadastroBolsista() {
         status: 'Pendente',
       };
 
-      console.log("Payload para criar inscrição:", inscricaoPayload);
       const inscricaoRes = await axiosInstance.post('/registrations/create', inscricaoPayload);
-      console.log("Resposta da API (criação inscrição):", inscricaoRes.data);
 
       if (inscricaoRes.data && inscricaoRes.data.id) {
         localStorage.setItem("lastKnownRegistrationId", inscricaoRes.data.id.toString());
-        console.log(`ID da inscrição ${inscricaoRes.data.id} salvo no localStorage.`);
       } else {
         console.warn("Não foi possível obter o ID da inscrição da resposta da API para salvar no localStorage.");
       }

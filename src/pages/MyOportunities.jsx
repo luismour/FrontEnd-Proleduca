@@ -69,7 +69,6 @@ export default function MyOportunities() {
       reg.scholarshipHolders.customers &&
       Number(reg.scholarshipHolders.customers.id) === Number(customerId)
     );
-    console.log("MyOportunities: Inscrições específicas do usuário (customerId:", customerId, "):", userSpecificRegistrations);
 
     let determinedCustomerCpf = loggedInCustomerCpfRef.current;
     if (!determinedCustomerCpf && userSpecificRegistrations.length > 0) {
@@ -77,7 +76,6 @@ export default function MyOportunities() {
       if (firstUserReg.scholarshipHolders.customers.cpf) {
         determinedCustomerCpf = firstUserReg.scholarshipHolders.customers.cpf.replace(/[^\d]/g, '');
         loggedInCustomerCpfRef.current = determinedCustomerCpf; // Armazena na ref
-        console.log("MyOportunities: CPF do cliente logado extraído e armazenado na ref:", determinedCustomerCpf);
       } else {
         console.warn("MyOportunities: Não foi possível extrair o CPF do cliente logado dos dados das suas inscrições.");
       }
@@ -121,7 +119,6 @@ export default function MyOportunities() {
     setError(null); 
     try {
       const response = await axiosInstance.get(`/registrations`);
-      console.log("MyOportunities: API Response Data (TODAS AS INSCRIÇÕES):", response.data);
       processAndSetRegistrations(response.data, user.id);
     } catch (err) {
       console.error("Erro ao buscar inscrições:", err);

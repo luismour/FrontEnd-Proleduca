@@ -1,6 +1,6 @@
 // src/pages/HomePage.jsx
 import OpportunitiesList from "../components/OpportunitiesList";
-import About from "../components/About"; // Renomeado de SobreEduPass
+import About from "../components/About"; 
 import Footer from "../components/Footer";
 
 function HomePage() {

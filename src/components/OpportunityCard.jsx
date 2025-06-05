@@ -2,11 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// Ícones opcionais (exemplo com Heroicons - instale com `npm install @heroicons/react`)
-// Se não quiser usar Heroicons, pode usar SVGs simples ou remover os ícones.
-// import { MapPinIcon, ClockIcon, AcademicCapIcon } from '@heroicons/react/24/outline'; 
 
-// Ícones SVG simples como fallback se não usar biblioteca
 const MapPinIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1 inline-block">
     <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />

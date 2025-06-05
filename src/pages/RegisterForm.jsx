@@ -207,7 +207,7 @@ export default function RegisterForm() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full btn btn-primary text-base py-3 flex justify-center items-center" // Adicionado flex para centralizar spinner e texto
+                      className="w-full btn btn-primary text-base py-3 flex justify-center items-center" 
                     >
                       {isSubmitting ? (
                         <>
